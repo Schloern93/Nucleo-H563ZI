@@ -27,10 +27,12 @@ set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS}")
 # Includepfade für HAL und CMSIS
 include_directories(
     #${CMAKE_SOURCE_DIR}/config
-    ${CMAKE_SOURCE_DIR}/libs/STM32G4xx_HAL_Driver_mod/Inc
-    ${CMAKE_SOURCE_DIR}/libs/CMSIS/Device/ST/STM32G4xx/Include
-    ${CMAKE_SOURCE_DIR}/libs/CMSIS/Core/Include
+    ${CMAKE_SOURCE_DIR}/Libraries/stm32h5xx-hal-driver/Inc
+    ${CMAKE_SOURCE_DIR}/Libraries/cmsis-device-h5/Include    
 )
+
+# TODO: Check this why this is needet and waht it does
+add_definitions(-DSTM32H563xx)
 
 # Add source files
 add_executable(${PROJECT_NAME} 
