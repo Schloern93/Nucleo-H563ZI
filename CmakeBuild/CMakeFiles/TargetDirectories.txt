@@ -1,3 +1,0 @@
-C:/wa/01_Projects/Nucleo-H563ZI/CmakeBuild/CMakeFiles/NucleoH5.dir
-C:/wa/01_Projects/Nucleo-H563ZI/CmakeBuild/CMakeFiles/edit_cache.dir
-C:/wa/01_Projects/Nucleo-H563ZI/CmakeBuild/CMakeFiles/rebuild_cache.dir
