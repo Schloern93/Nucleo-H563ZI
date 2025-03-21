@@ -12,6 +12,8 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 
 ## Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE Debug)
+
 
 # Project
 project(NucleoH5 LANGUAGES C CXX ASM)
