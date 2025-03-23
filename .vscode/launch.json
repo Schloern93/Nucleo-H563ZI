@@ -2,6 +2,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug STM32 with Cortex-Debug (External)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "external", // Externer GDB-Server: TODO: This should removed after svg file available in the official openOcd package
+            "executable": "${workspaceFolder}/CmakeBuild/NucleoH5.elf",
+            "cwd": "${workspaceFolder}",
+            "gdbPath": "C:/ProgramData/chocolatey/bin/arm-none-eabi-gdb.exe",
+            "configFiles": [
+                "Debug/stlink-dap.cfg",
+                "Debug/stm32h5x.cfg"
+            ],
+            "runToEntryPoint": "main",
+            "svdFile": "${workspaceFolder}/Debug/STM32H563.svd",
+            "postRestartCommands": [
+                "monitor reset halt",
+            ],
+            "gdbTarget": "localhost:3333"
+        },
+        {
             "name": "Debug STM32",
             "type": "cppdbg",
             "request": "launch",
@@ -40,26 +59,5 @@
             "stopAtEntry": true,
             "serverStarted": "Info : Listening on port 3333 for gdb connections"
         },
-        {
-            "name": "Debug STM32 with Cortex-Debug (External)",
-            "type": "cortex-debug",
-            "request": "launch",
-            "servertype": "external", // Externer GDB-Server: TODO: This should removed after svg file available in the official openOcd package
-            "executable": "${workspaceFolder}/CmakeBuild/NucleoH5.elf",
-            "cwd": "${workspaceFolder}",
-            "gdbPath": "C:/ProgramData/chocolatey/bin/arm-none-eabi-gdb.exe",
-            "configFiles": [
-                "Debug/stlink-dap.cfg",
-                "Debug/stm32h5x.cfg"
-            ],
-            "runToEntryPoint": "main",
-            "svdFile": "${workspaceFolder}/Debug/STM32H563.svd",
-            "postRestartCommands": [
-                "monitor reset halt",
-                "break main",
-                "continue"
-            ],
-            "gdbTarget": "localhost:3333"
-        }
     ]
 }
