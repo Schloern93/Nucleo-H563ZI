@@ -1,9 +1,10 @@
 # Nucleo-H5663ZI
 
 # Debugging:
-Starten des Debuggens von der Commandozeile
+Starten des Debuggens von der Commandozeile in dem mingw fenster!!!
 - openocd -f Debug/stlink.cfg -f Debug/st_nucleo_h5.cfg
-- Neues Terminal GDB starten
+
+Neues Terminal GDB starten
 - arm-none-eabi-gdb CmakeBuild/NucleoH5.elf
 - target remote localhost:3333
 

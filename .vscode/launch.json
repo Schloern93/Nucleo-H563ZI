@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug STM32",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/CmakeBuild/NucleoH5.elf",
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/ProgramData/chocolatey/bin/arm-none-eabi-gdb.exe",
+            "setupCommands": [
+                {
+                    "text": "target remote localhost:3333",
+                    "description": "Connect to OpenOCD",
+                    "ignoreFailures": false
+                },
+                {
+                    "text": "monitor reset halt",
+                    "description": "Reset and halt the target",
+                    "ignoreFailures": false
+                },
+                {
+                    "text": "break main",
+                    "description": "Set breakpoint at main",
+                    "ignoreFailures": false
+                },
+                {
+                    "text": "break main",
+                    "description": "Set breakpoint at main",
+                    "ignoreFailures": false
+                },
+                {
+                    "text": "break main",
+                    "description": "Set breakpoint at main",
+                    "ignoreFailures": false
+                }
+            ],
+            "externalConsole": false,
+            "stopAtEntry": true,
+            "serverStarted": "Info : Listening on port 3333 for gdb connections"
+        }
+    ]
+}
