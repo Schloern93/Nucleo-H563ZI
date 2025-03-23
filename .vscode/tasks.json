@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "FlashSTM32WithCubeProgrammer",
+            "type": "shell",
+            "command": "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI.exe",
+            "args": [
+                "-c",
+                "port=SWD",
+                "-d",
+                "\"${workspaceFolder}/CmakeBuild/NucleoH5.elf\"",
+                "-v"
+            ],
+        },
+        {
+            "label": "Flash and Start OpenOcd",
+            "dependsOn": [
+                "FlashSTM32WithCubeProgrammer",
+                //"OpenOCD Start"
+            ],
+            "type": "shell",
+        }
+    ]
+}

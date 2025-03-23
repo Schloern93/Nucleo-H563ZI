@@ -1,0 +1,8 @@
+{
+    "terminal.integrated.profiles.windows": {
+        "mingw64": {
+            "path": "C:/tools/msys64/mingw64.exe",
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+}

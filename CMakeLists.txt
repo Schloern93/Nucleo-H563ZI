@@ -12,6 +12,8 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 
 ## Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE Debug)
+
 
 # Project
 project(NucleoH5 LANGUAGES C CXX ASM)
@@ -22,7 +24,7 @@ set(CMAKE_CXX_COMPILER C:/ProgramData/chocolatey/bin/arm-none-eabi-g++.exe)
 set(CMAKE_ASM_COMPILER C:/ProgramData/chocolatey/bin/arm-none-eabi-gcc.exe)
 
 # Compiler-Flags (angepasst für STM32 H5)
-set(CMAKE_C_FLAGS "-mcpu=cortex-m33 -mthumb -Wall -O0 -ffunction-sections -fdata-sections -g -mfloat-abi=soft")
+set(CMAKE_C_FLAGS "-mcpu=cortex-m33 -mthumb -Wall -O0 -ffunction-sections -fdata-sections -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}")
 set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS}")
 
