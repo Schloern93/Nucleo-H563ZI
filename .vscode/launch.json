@@ -18,7 +18,8 @@
             "postRestartCommands": [
                 "monitor reset halt",
             ],
-            "gdbTarget": "localhost:3333"
+            "gdbTarget": "localhost:3333",
+            "preLaunchTask": "FlashSTM32WithCubeProgrammer",
         },
         {
             "name": "Debug STM32",
