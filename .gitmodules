@@ -5,3 +5,7 @@
 [submodule "Libraries/CMSIS_5"]
     path = Libraries/CMSIS_5
     url = https://github.com/ARM-software/CMSIS_5.git
+
+[submodule "Libraries/stm32h5xx-hal-driver"]
+    path = Libraries/stm32h5xx-hal-driver
+    url = https://github.com/STMicroelectronics/stm32h5xx-hal-driver.git
