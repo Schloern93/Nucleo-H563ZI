@@ -1,3 +1,7 @@
 [submodule "Libraries/cmsis-device-h5"]
     path = Libraries/cmsis-device-h5
     url = https://github.com/STMicroelectronics/cmsis-device-h5.git
+
+[submodule "Libraries/CMSIS_5"]
+    path = Libraries/CMSIS_5
+    url = https://github.com/ARM-software/CMSIS_5.git
