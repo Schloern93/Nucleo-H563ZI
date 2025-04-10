@@ -1,9 +1,7 @@
 
 
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure/
-    ${CMAKE_SOURCE_DIR}/Config
+    #${CMAKE_SOURCE_DIR}/Config
 )
 
 # Erstelle die FreeRTOS Library
@@ -19,9 +17,9 @@ add_library(FreeRTOS STATIC
 
 # Include-Pfade für FreeRTOS
 target_include_directories(FreeRTOS PUBLIC
+    ${CMAKE_SOURCE_DIR}/Config
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/include
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure/
-    ${CMAKE_SOURCE_DIR}/Config
 )
 
 
