@@ -5,4 +5,6 @@
         }
     },
     "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true,
 }
