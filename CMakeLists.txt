@@ -20,8 +20,7 @@ set(CMAKE_BUILD_TYPE Debug)
 # Project
 project(NucleoH5 LANGUAGES C CXX ASM)
 
-#Add Subdirectory for Libs
-add_subdirectory(Libraries)
+
 
 # Set compiler to arm-none-eabi
 set(CMAKE_C_COMPILER "C:/ProgramData/chocolatey/bin/arm-none-eabi-gcc.exe")
@@ -32,6 +31,9 @@ set(CMAKE_ASM_COMPILER "C:/ProgramData/chocolatey/bin/arm-none-eabi-gcc.exe")
 set(CMAKE_C_FLAGS "-mcpu=cortex-m33 -mthumb -Wall -O0 -ffunction-sections -fdata-sections -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}")
 set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS}")
+
+#Add Subdirectory for Libs
+add_subdirectory(Libraries)
 
 
 # Includepfade für HAL und CMSIS

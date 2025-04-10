@@ -1,7 +1,5 @@
 
 
-# set(FREERTOS_PORT "portable/GCC/ARM_CM33/non_secure")
-
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/include
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33/non_secure/
