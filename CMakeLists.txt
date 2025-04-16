@@ -20,8 +20,6 @@ set(CMAKE_BUILD_TYPE Debug)
 # Project
 project(NucleoH5 LANGUAGES C CXX ASM)
 
-
-
 # Set compiler to arm-none-eabi
 set(CMAKE_C_COMPILER "C:/ProgramData/chocolatey/bin/arm-none-eabi-gcc.exe")
 set(CMAKE_CXX_COMPILER "C:/ProgramData/chocolatey/bin/arm-none-eabi-g++.exe")
@@ -33,16 +31,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}")
 set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS}")
 
 #Add Subdirectory for Libs
+add_subdirectory(Config)
 add_subdirectory(Libraries)
 
 
-# Includepfade für HAL und CMSIS
-include_directories(
-    #${CMAKE_SOURCE_DIR}/config
-    ${CMAKE_SOURCE_DIR}/Libraries/stm32h5xx-hal-driver/Inc
-    ${CMAKE_SOURCE_DIR}/Libraries/CMSIS_5/CMSIS/Core/Include
-    ${CMAKE_SOURCE_DIR}/Libraries/cmsis-device-h5/Include
-)
+# # Includepfade für HAL und CMSIS
+# include_directories(
+#     ${CMAKE_SOURCE_DIR}/Libraries/CMSIS_5/CMSIS/Core/Include #TODO: Remove this to library cmkae
+#     ${CMAKE_SOURCE_DIR}/Libraries/cmsis-device-h5/Include # TODO: Remove this to library cmake
+# )
 
 # TODO: Check this why this is needet and waht it does
 add_definitions(-DSTM32H563xx)
@@ -61,8 +58,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".elf")
 target_link_libraries(${PROJECT_NAME}
     c
     nosys
+    FreeRTOS
+    stm32h5xx_hal
 )
-#target_link_libraries(${PROJECT_NAME} PRIVATE FreeRTOS)
 
 # Linker-Script
 target_link_options(${PROJECT_NAME} PRIVATE
