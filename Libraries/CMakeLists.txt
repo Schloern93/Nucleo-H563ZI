@@ -1,6 +1,6 @@
 # Cmsis
-add_library(Cmsis INTERFACE)
-target_include_directories(Cmsis INTERFACE
+add_library(CmsisCore INTERFACE)
+target_include_directories(CmsisCore INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS_5/CMSIS/Core/Include
 )
 
@@ -11,17 +11,17 @@ target_include_directories(CmsisDeviceH5 INTERFACE
 )
 
 # Erstelle  stm32h5xx hal lib
-add_library(stm32h5xx_hal STATIC
+add_library(Stm32H563Hal STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal.c
 )
-target_compile_definitions(stm32h5xx_hal PUBLIC STM32H563xx)
-target_include_directories(stm32h5xx_hal PUBLIC
+target_compile_definitions(Stm32H563Hal PUBLIC STM32H563xx)
+target_include_directories(Stm32H563Hal PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Inc
 )
-target_link_libraries(stm32h5xx_hal PUBLIC
+target_link_libraries(Stm32H563Hal PUBLIC
     Stm32h563HalConfig
     CmsisDeviceH5
-    Cmsis
+    CmsisCore
 )
 
 # Erstelle die FreeRTOS Library
@@ -40,6 +40,29 @@ target_include_directories(FreeRTOS PUBLIC
 )
 target_link_libraries(FreeRTOS PUBLIC
     FreeRtosConfig
+)
+
+add_library(FreeRTOS_Addons STATIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/ccondition_variable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/cevent_groups.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/cmem_pool.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/cmutex.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/cqueue.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/cread_write_lock.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/csemaphore.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/ctasklet.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/cthread.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/ctickhook.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/ctimer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/cworkqueue.cpp
+)
+
+target_include_directories(FreeRTOS_Addons PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/freertos-addons/c++/Source/include
+)
+
+target_link_libraries(FreeRTOS_Addons PUBLIC
+    FreeRTOS
 )
 
 
