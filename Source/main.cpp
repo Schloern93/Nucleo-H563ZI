@@ -4,10 +4,10 @@
 #include "task1.hpp"
 #include "task2.hpp"
 
-int main() {
+Task1 task1;
+Task2 task2;
 
-  Task1 task1;
-  Task2 task2;
+int main() {
 
   cpp_freertos::Thread::StartScheduler();
 

@@ -7,6 +7,7 @@ class Task2 : public cpp_freertos::Thread {
 public:
   Task2()
       : cpp_freertos::Thread("Task2", 50U, (configMAX_PRIORITIES - 1U)) {
+    this->Start();
   }
 
   void Run() override {
