@@ -1,0 +1,19 @@
+[submodule "Libraries/cmsis-device-h5"]
+    path = Libraries/cmsis-device-h5
+    url = https://github.com/STMicroelectronics/cmsis-device-h5.git
+
+[submodule "Libraries/CMSIS_5"]
+    path = Libraries/CMSIS_5
+    url = https://github.com/ARM-software/CMSIS_5.git
+
+[submodule "Libraries/stm32h5xx-hal-driver"]
+    path = Libraries/stm32h5xx-hal-driver
+    url = https://github.com/STMicroelectronics/stm32h5xx-hal-driver.git
+
+[submodule "Libraries/FreeRTOS-Kernel"]
+    path = Libraries/FreeRTOS-Kernel
+    url = https://github.com/FreeRTOS/FreeRTOS-Kernel
+
+[submodule "Libraries/freertos-addons"]
+	path = Libraries/freertos-addons
+	url = https://github.com/michaelbecker/freertos-addons
