@@ -4,7 +4,10 @@
 #include "task1.hpp"
 #include "task2.hpp"
 
-Task1 task1;
+#include "adc_test.hpp"
+
+ADC_Test adc_test;
+Task1 task1(adc_test);
 Task2 task2;
 
 int main() {
