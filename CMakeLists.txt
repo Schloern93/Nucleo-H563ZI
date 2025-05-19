@@ -7,7 +7,6 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # Project
 project(NucleoH5 LANGUAGES C CXX ASM)
-
 # Add Subdirectory for Libs
 add_subdirectory(Config)
 add_subdirectory(Libraries)

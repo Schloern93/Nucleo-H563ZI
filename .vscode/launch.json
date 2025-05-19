@@ -60,6 +60,6 @@
             // "setupMacros": [
             //     "${workspaceFolder}\\CMakeBuild\\nucleo_h563zi\\nucleo_h563zi_debug_info.mac"
             // ]
-        }
+        },
     ]
 }

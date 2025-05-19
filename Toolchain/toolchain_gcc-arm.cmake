@@ -1,3 +1,4 @@
+
 # Set CMake to create a static library instead of an executable during compiler tests
 # This is necessary not fail if trying buil a test executable for the target platform
 # Because the c compiler create  a file which runs on arm not on the host machine
