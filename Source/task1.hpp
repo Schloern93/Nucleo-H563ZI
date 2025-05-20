@@ -15,7 +15,7 @@ public:
 
   void Run() override {
     // Task implementation goes here
-    adc_test.start();
+    adc_test.StartAdcWithDma();
     while(true) {
       // Do something
       Delay(1000); // Delay for 1 second
