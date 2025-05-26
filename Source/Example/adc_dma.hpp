@@ -143,10 +143,6 @@ public:
     node_conf_adc1.DstAddress = (uint32_t)adcData;
     node_conf_adc1.DataSize = sizeof(adcData);
 
-    // Linked List initialisieren
-    // if(HAL_DMAEx_List_InitQ(&dmaList) != HAL_OK) {
-    //   assert(0); // Fehler beim Initialisieren der Queue
-    // }
     // Linked List aufbauen
     if(HAL_DMAEx_List_BuildNode(&node_conf_adc1, &dmaNode) != HAL_OK) {
       assert(0); // Fehler beim Erstellen des Knotens
