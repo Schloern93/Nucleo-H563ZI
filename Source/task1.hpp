@@ -15,12 +15,10 @@ public:
 
   void Run() override {
 
-    adcPollingConfig.Init();
-
     while(true) {
       // Do something
       Delay(500); // Delay for 1 second
-      adcPollingConfig.UpdateAdcValues();
+      adcPollingConfig.UpdateAdcChannels();
     }
   }
 

@@ -60,10 +60,16 @@ class Interface_AdcChannel {
 public:
   virtual ~Interface_AdcChannel() = default;
 
-  virtual AdcInstance GetAdcInstance() const = 0;
   virtual AdcChannelConfig GetChannel() const = 0;
   virtual AdcRank GetRank() const = 0;
   virtual AdcSamplingTime GetSamplingTime() const = 0;
 
-  virtual void SetChannelRawValue(uint32_t value) = 0;
+  virtual void SetChannelVoltageMv(uint32_t value) = 0;
+};
+
+class Interface_AdcChannelGetter {
+public:
+  virtual ~Interface_AdcChannelGetter() = default;
+
+  virtual uint32_t GetVoltageMv() const = 0;
 };

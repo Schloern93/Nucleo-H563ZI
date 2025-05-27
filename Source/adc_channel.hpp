@@ -3,21 +3,14 @@
 
 #include "interface_adc_channel.hpp"
 
-class AdcChannel : public Interface_AdcChannel {
+class AdcChannel : public Interface_AdcChannel, public Interface_AdcChannelGetter {
 public:
-  AdcChannel(AdcInstance adcInstanceInit,
-             AdcChannelConfig channelInit,
-             AdcRank rankInit,
-             AdcSamplingTime samplingTimeInit)
-      : adcInstance(adcInstanceInit),
-        channel(channelInit),
+  AdcChannel(AdcChannelConfig channelInit, AdcRank rankInit, AdcSamplingTime samplingTimeInit)
+      : channel(channelInit),
         rank(rankInit),
         samplingTime(samplingTimeInit) {
   }
 
-  AdcInstance GetAdcInstance() const override {
-    return adcInstance;
-  }
   AdcChannelConfig GetChannel() const override {
     return channel;
   }
@@ -28,15 +21,18 @@ public:
     return samplingTime;
   }
 
-  void SetChannelRawValue(uint32_t value) override {
-    channelRawValue = value;
+  void SetChannelVoltageMv(uint32_t voltageMv) override {
+    channelVoltageMv = voltageMv;
+  }
+
+  uint32_t GetVoltageMv() const override {
+    return channelVoltageMv;
   }
 
 private:
-  AdcInstance adcInstance{};
   AdcChannelConfig channel{};
   AdcRank rank{};
   AdcSamplingTime samplingTime{};
-  uint32_t channelRawValue{};
+  uint32_t channelVoltageMv{};
   // TODO: Each Channel can have one fileter
 };

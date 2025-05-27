@@ -1,3 +1,15 @@
+Du hast das Prinzip korrekt verstanden – jetzt brauchst du noch eine klare Trennung zwischen:
+
+Wann sind neue Daten da
+
+Wer darf lesen
+
+Wer schreibt gerade
+
+
+
+
+
 1. Trennung: Konfiguration vs. Implementierung
 Konfiguration:
 Beschreibt was gemacht wird, z.B.

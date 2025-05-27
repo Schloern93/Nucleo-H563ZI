@@ -6,57 +6,73 @@
 #include "stm32h5xx_hal.h"
 #include "stm32h5xx_hal_adc.h"
 #include "stm32h5xx_hal_adc_ex.h"
-#include "stm32h5xx_hal_cortex.h"
-
 #include "stm32h5xx_hal_rcc.h"
 
 #include "interface_adc_config.hpp"
 #include "interface_adc_channel.hpp"
 
-template <size_t NumberOfChannles> class AdcPollingConfig : public Interface_AdcConfig {
+template <size_t NumberOfChannels> class AdcPollingConfig : public Interface_AdcConfig {
 public:
-  AdcPollingConfig(AdcInstance adcInstanceInit, std::array<Interface_AdcChannel *, NumberOfChannles> adcChannelInit)
+  AdcPollingConfig(AdcInstance adcInstanceInit,
+                   AdcResolution adcResolutionInit,
+                   AdcReferenceVoltage adcRefernceVoltageInit,
+                   std::array<Interface_AdcChannel *, NumberOfChannels> adcChannelInit)
       : adcInstance(adcInstanceInit),
+        adcResolution(adcResolutionInit),
+        adcReferenceVoltage(adcRefernceVoltageInit),
         adcChannels(adcChannelInit) {
-  }
-
-  void Init() override {
-    LL_ADC_SetCommonPathInternalCh(__LL_ADC_COMMON_INSTANCE(ADC1), LL_ADC_PATH_INTERNAL_TEMPSENSOR);
-    switch(adcInstance) {
-    case AdcInstance::ADC_1: hadc.Instance = ADC1; break;
-    case AdcInstance::ADC_2: hadc.Instance = ADC2; break;
-    default: assert(0); return;
-    }
     InitAdcHandle();
-    InitAdcChannels();
+    UpdateAdcChannels();
   }
-
-  void Deinit() override {
+  ~AdcPollingConfig() override {
     DeinitAdcHandle();
   }
 
-  void UpdateAdcValues() override {
+  void UpdateAdcChannels() override {
     if(HAL_ADC_Start(&hadc) != HAL_OK) {
-      assert(0); // Error handling
+      assert(0);
     }
-    for(size_t i = 0; i < NumberOfChannles; ++i) {
-      HAL_ADC_PollForConversion(&hadc, 1000);
-      adcChannels[i]->SetChannelRawValue(HAL_ADC_GetValue(&hadc));
+    for(size_t i = 0; i < NumberOfChannels; ++i) {
+      if(HAL_ADC_PollForConversion(&hadc, ADC_POLL_TIMEOUT_MS) != HAL_OK) {
+        assert(0);
+      }
+      uint32_t rawValue = HAL_ADC_GetValue(&hadc);
+      adcChannels[i]->SetChannelVoltageMv(CalculateChannelVoltageMv(adcReferenceVoltage, adcResolution, rawValue));
     }
     if(HAL_ADC_Stop(&hadc) != HAL_OK) {
-      assert(0); // Error handling
+      assert(0);
     }
   }
 
 private:
   AdcInstance adcInstance;
-  std::array<Interface_AdcChannel *, NumberOfChannles> adcChannels; // TODO: Check uneque pointer
+  AdcResolution adcResolution;
+  AdcReferenceVoltage adcReferenceVoltage;
+  std::array<Interface_AdcChannel *, NumberOfChannels> adcChannels;
   ADC_HandleTypeDef hadc{};
+  inline static uint8_t adcInstanceCounter{0};
+  static constexpr uint16_t ADC_POLL_TIMEOUT_MS = 10;
 
   void InitAdcHandle() {
     __HAL_RCC_ADC_CLK_ENABLE();
-    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV6; // TODO: Check for differnt clocks
-    hadc.Init.Resolution = ADC_RESOLUTION_12B;
+
+    if(adcInstance == AdcInstance::ADC_1) {
+      for(const auto &channel : adcChannels) {
+        if(channel->GetChannel() == AdcChannelConfig::CHANNEL_16) {
+          LL_ADC_SetCommonPathInternalCh(__LL_ADC_COMMON_INSTANCE(ADC1), LL_ADC_PATH_INTERNAL_TEMPSENSOR);
+        }
+        if(channel->GetChannel() == AdcChannelConfig::CHANNEL_17) {
+          LL_ADC_SetCommonPathInternalCh(__LL_ADC_COMMON_INSTANCE(ADC1), LL_ADC_PATH_INTERNAL_VBAT);
+        }
+        if(channel->GetChannel() == AdcChannelConfig::CHANNEL_18) {
+          LL_ADC_SetCommonPathInternalCh(__LL_ADC_COMMON_INSTANCE(ADC1), LL_ADC_PATH_INTERNAL_VREFINT);
+        }
+      }
+    }
+
+    hadc.Instance = MapInstance(adcInstance);
+    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV6;
+    hadc.Init.Resolution = MapResolution(adcResolution);
     hadc.Init.ScanConvMode = ADC_SCAN_ENABLE;
     hadc.Init.ContinuousConvMode = DISABLE;
     hadc.Init.DiscontinuousConvMode = DISABLE;
@@ -65,25 +81,29 @@ private:
     hadc.Init.NbrOfConversion = adcChannels.size();
     hadc.Init.DMAContinuousRequests = DISABLE;
     hadc.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-
     hadc.DMA_Handle = nullptr; // No DMA used
 
     if(HAL_ADC_Init(&hadc) != HAL_OK) {
       assert(0);
     }
-    HAL_ADCEx_Calibration_Start(&hadc, ADC_SINGLE_ENDED);
+    if(HAL_ADCEx_Calibration_Start(&hadc, ADC_SINGLE_ENDED) != HAL_OK) {
+      assert(0);
+    }
+    InitAdcChannels();
+    adcInstanceCounter++;
   }
 
   void DeinitAdcHandle() {
     if(HAL_ADC_DeInit(&hadc) != HAL_OK) {
       assert(0);
     }
-    __HAL_RCC_ADC_CLK_DISABLE();
+    adcInstanceCounter--;
+    DisableAdcClock();
   }
 
   void InitAdcChannels() {
     ADC_ChannelConfTypeDef sConfig{};
-    for(auto &adcChannel : adcChannels) {
+    for(const auto &adcChannel : adcChannels) {
       sConfig.Channel = MapChannel(adcChannel->GetChannel());
       sConfig.Rank = MapRank(adcChannel->GetRank());
       sConfig.SamplingTime = MapSamplingTime(adcChannel->GetSamplingTime());
@@ -95,7 +115,31 @@ private:
     }
   }
 
-  constexpr uint32_t MapChannel(AdcChannelConfig channel) {
+  void DisableAdcClock() {
+    if(adcInstanceCounter == 0) {
+      __HAL_RCC_ADC_CLK_DISABLE();
+    }
+  }
+
+  constexpr ADC_TypeDef *MapInstance(AdcInstance instance) {
+    switch(instance) {
+    case AdcInstance::ADC_1: return ADC1;
+    case AdcInstance::ADC_2: return ADC2;
+    default: assert(false); return nullptr;
+    }
+  }
+
+  static constexpr uint32_t MapResolution(AdcResolution resolution) {
+    switch(resolution) {
+    case AdcResolution::RESOLUTION_12_BIT: return ADC_RESOLUTION_12B;
+    case AdcResolution::RESOLUTION_10_BIT: return ADC_RESOLUTION_10B;
+    case AdcResolution::RESOLUTION_8_BIT: return ADC_RESOLUTION_8B;
+    case AdcResolution::RESOLUTION_6_BIT: return ADC_RESOLUTION_6B;
+    default: assert(false); return 0;
+    }
+  }
+
+  static constexpr uint32_t MapChannel(AdcChannelConfig channel) {
     switch(channel) {
     case AdcChannelConfig::CHANNEL_0: return ADC_CHANNEL_0;
     case AdcChannelConfig::CHANNEL_1: return ADC_CHANNEL_1;
@@ -121,7 +165,7 @@ private:
     }
   }
 
-  constexpr uint32_t MapRank(AdcRank rank) {
+  static constexpr uint32_t MapRank(AdcRank rank) {
     switch(rank) {
     case AdcRank::RANK_1: return ADC_REGULAR_RANK_1;
     case AdcRank::RANK_2: return ADC_REGULAR_RANK_2;
@@ -143,7 +187,7 @@ private:
     }
   }
 
-  constexpr uint32_t MapSamplingTime(AdcSamplingTime samplingTime) {
+  static constexpr uint32_t MapSamplingTime(AdcSamplingTime samplingTime) {
     switch(samplingTime) {
     case AdcSamplingTime::CYCLES_2_5: return ADC_SAMPLETIME_2CYCLES_5;
     case AdcSamplingTime::CYCLES_6_5: return ADC_SAMPLETIME_6CYCLES_5;
@@ -154,6 +198,25 @@ private:
     case AdcSamplingTime::CYCLES_247_5: return ADC_SAMPLETIME_247CYCLES_5;
     case AdcSamplingTime::CYCLES_640_5: return ADC_SAMPLETIME_640CYCLES_5;
     default: assert(false); return 0;
+    }
+  }
+
+  static constexpr uint32_t CalculateChannelVoltageMv(AdcReferenceVoltage referenceVoltage,
+                                                      AdcResolution adcResolution,
+                                                      uint32_t rawValue) {
+    uint32_t retVal = 0;
+    uint32_t vref = (referenceVoltage == AdcReferenceVoltage::MV_3300) ? 3300U : 5000U;
+    retVal = (rawValue * vref) / GetMaxValueForResolution(adcResolution);
+    return retVal;
+  }
+
+  static constexpr uint16_t GetMaxValueForResolution(AdcResolution res) {
+    switch(res) {
+    case AdcResolution::RESOLUTION_12_BIT: return (1 << 12) - 1;
+    case AdcResolution::RESOLUTION_10_BIT: return (1 << 10) - 1;
+    case AdcResolution::RESOLUTION_8_BIT: return (1 << 8) - 1;
+    case AdcResolution::RESOLUTION_6_BIT: return (1 << 6) - 1;
+    default: assert(false); break;
     }
   }
 };
