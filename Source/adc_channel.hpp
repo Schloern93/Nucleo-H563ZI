@@ -34,5 +34,4 @@ private:
   AdcRank rank{};
   AdcSamplingTime samplingTime{};
   uint32_t channelVoltageMv{};
-  // TODO: Each Channel can have one fileter
 };

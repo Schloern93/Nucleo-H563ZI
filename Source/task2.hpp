@@ -3,14 +3,14 @@
 #include "thread.hpp"
 #include "FreeRTOSConfig.h"
 
-#include "interface_adc_channel.hpp"
+#include "interface_sensor.hpp"
 
 class Task2 : public cpp_freertos::Thread {
 public:
-  Task2(Interface_AdcChannelGetter &ch1Init, Interface_AdcChannelGetter &ch2Init)
+  Task2(Interface_Sensor &externalTempSensorInit, Interface_Sensor &internalTempSensorInit)
       : cpp_freertos::Thread("Task2", 50U, (configMAX_PRIORITIES - 1U)),
-        ch1(ch1Init),
-        ch2(ch2Init) {
+        externalTempSensor(externalTempSensorInit),
+        internalTempSensor(internalTempSensorInit) {
     this->Start();
   }
 
@@ -19,13 +19,13 @@ public:
     while(true) {
       // Do something
       Delay(1000); // Delay for 1 second
-      data[0] = ch1.GetVoltageMv();
-      data[1] = ch2.GetVoltageMv();
+      data[0] = externalTempSensor.GetSensorData();
+      data[1] = internalTempSensor.GetSensorData();
     }
   }
 
 private:
-  Interface_AdcChannelGetter &ch1;
-  Interface_AdcChannelGetter &ch2;
-  uint32_t data[2] = {0, 0};
+  Interface_Sensor &externalTempSensor;
+  Interface_Sensor &internalTempSensor;
+  SensorData data[2] = {0, 0};
 };
