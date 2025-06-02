@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug STM32 with Cortex-Debug (External)",
+            "name": "Debug STM32H563 with Cortex-Debug GCC (External)",
             "type": "cortex-debug",
             "request": "launch",
             "servertype": "external", // Externer GDB-Server: TODO: This should removed after svg file available in the official openOcd package
@@ -24,9 +24,9 @@
         {
             "type": "cspy",
             "request": "launch",
-            "name": "nucleo_h563zi application",
+            "name": "Debug STM32H563 with Cortex-Debug IAR",
             "target": "arm",
-            "program": "${workspaceFolder}\\CMakeBuild\\nucleo_h563zi\\nucleo_h563zi_application.hex",
+            "program": "${workspaceFolder}\\CMakeBuild\\NucleoH5.elf",
             "driver": "ST-LINK",
             "stopOnSymbol": "main",
             "workbenchPath": "C:\\iar\\ewarm-9.60.3",
@@ -56,10 +56,10 @@
                     "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_DBG.dmac",
                     "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_TRACE.dmac"
                 ]
-            },
-            "setupMacros": [
-                "${workspaceFolder}\\CMakeBuild\\nucleo_h563zi\\nucleo_h563zi_debug_info.mac"
-            ]
+            }
+            // "setupMacros": [
+            //     "${workspaceFolder}\\CMakeBuild\\nucleo_h563zi\\nucleo_h563zi_debug_info.mac"
+            // ]
         }
     ]
 }

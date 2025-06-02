@@ -10,14 +10,14 @@
       "name": "Development_Using_GCC",
       "description": "Default configuration using Ninja generator",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/CmakeBuild",
+      "binaryDir": "${sourceDir}/CmakeBuild/GCC",
       "toolchainFile": "${sourceDir}/Toolchain/toolchain_gcc-arm.cmake"
     },
     {
       "name": "Development_Using_IAR",
       "description": "Default configuration using IAR Compiler",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/CmakeBuild",
+      "binaryDir": "${sourceDir}/CmakeBuild/IAR",
       "toolchainFile": "${sourceDir}/Toolchain/toolchain_iar-arm.cmake"
     }
   ],
