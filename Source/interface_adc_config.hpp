@@ -13,11 +13,6 @@ enum class AdcResolution {
   RESOLUTION_6_BIT,
 };
 
-enum class AdcReferenceVoltage {
-  MV_3300,
-  MV_5000,
-};
-
 class Interface_AdcConfig {
 public:
   virtual ~Interface_AdcConfig() = default;

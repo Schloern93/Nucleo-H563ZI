@@ -7,7 +7,7 @@
 
 class Task2 : public cpp_freertos::Thread {
 public:
-  Task2(Interface_Sensor &externalTempSensorInit, Interface_Sensor &internalTempSensorInit)
+  Task2(Interface_SensorData &externalTempSensorInit, Interface_SensorData &internalTempSensorInit)
       : cpp_freertos::Thread("Task2", 50U, (configMAX_PRIORITIES - 1U)),
         externalTempSensor(externalTempSensorInit),
         internalTempSensor(internalTempSensorInit) {
@@ -25,7 +25,7 @@ public:
   }
 
 private:
-  Interface_Sensor &externalTempSensor;
-  Interface_Sensor &internalTempSensor;
-  SensorData data[2] = {0, 0};
+  Interface_SensorData &externalTempSensor;
+  Interface_SensorData &internalTempSensor;
+  SensorData data[2]{};
 };

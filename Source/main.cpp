@@ -14,25 +14,37 @@
 #include "adc_polling_config.hpp"
 #include "adc_channel.hpp"
 #include "interface_adc_channel.hpp"
-#include "mcu_temperature_sensor.hpp"
+// #include "thermistor_sensor.hpp"
+#include "mcu_temp_sensor.hpp"
+
+// Create Sensors
+// ThermistorSensor externalTempSensor(adc0, semitec103ATCurve, 10'000U);
+// ThermistorSensor internalTempSensor(adc0, semitec103ATCurve, 10'000U);
+McuTempSensor externalTempSensor;
+McuTempSensor internalTempSensor;
 
 // Define ADC channels
 static constexpr size_t ADC_CHANNEL_COUNT = 2;
-AdcChannel adc0(AdcChannelConfig::CHANNEL_6, AdcRank::RANK_1, AdcSamplingTime::CYCLES_247_5);
-AdcChannel adc1(AdcChannelConfig::CHANNEL_16, AdcRank::RANK_2, AdcSamplingTime::CYCLES_247_5);
-std::array<Interface_AdcChannel *, ADC_CHANNEL_COUNT> adcChannels = {&adc0, &adc1};
+AdcChannel adc0(externalTempSensor,
+                AdcChannelConfig::CHANNEL_6,
+                AdcRank::RANK_1,
+                AdcSamplingTime::CYCLES_247_5,
+                ReferenceVoltage::MV_3300);
+AdcChannel adc1(internalTempSensor,
+                AdcChannelConfig::CHANNEL_16,
+                AdcRank::RANK_2,
+                AdcSamplingTime::CYCLES_247_5,
+                ReferenceVoltage::MV_3300);
+std::array<Interface_AdcChannelConfig *, ADC_CHANNEL_COUNT> adcChannels = {&adc0, &adc1};
 
 // Create ADC
-AdcPollingConfig<ADC_CHANNEL_COUNT>
-    adc1PollingConfig(AdcInstance::ADC_1, AdcResolution::RESOLUTION_12_BIT, AdcReferenceVoltage::MV_3300, adcChannels);
-
-// Create Sensors
-McuTemperatureSensor externalTempSensor(adc0);
-McuTemperatureSensor internalTempSensor(adc1); // Internal MCU temperature sensor
+AdcPollingConfig<ADC_CHANNEL_COUNT> adc1PollingConfig(AdcInstance::ADC_1,
+                                                      AdcResolution::RESOLUTION_12_BIT,
+                                                      adcChannels);
 
 // Create tasks
 Task1 task1(adc1PollingConfig);
-Task2 task2(externalTempSensor, internalTempSensor);
+Task2 task2(adc0, adc1);
 
 int main() {
   __HAL_RCC_GPIOF_CLK_ENABLE();

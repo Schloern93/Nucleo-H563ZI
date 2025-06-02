@@ -3,6 +3,11 @@
 
 #include <cstdint>
 
+enum class ReferenceVoltage {
+  MV_3300,
+  MV_5000,
+};
+
 enum class AdcSamplingTime {
   CYCLES_2_5,
   CYCLES_6_5,
@@ -56,20 +61,14 @@ enum class AdcRank {
   RANK_16,
 };
 
-class Interface_AdcChannel {
+class Interface_AdcChannelConfig {
 public:
-  virtual ~Interface_AdcChannel() = default;
+  virtual ~Interface_AdcChannelConfig() = default;
 
   virtual AdcChannelConfig GetChannel() const = 0;
   virtual AdcRank GetRank() const = 0;
   virtual AdcSamplingTime GetSamplingTime() const = 0;
+  virtual void SetAdcResolution(uint32_t resolution) = 0;
 
-  virtual void SetChannelVoltageMv(uint32_t value) = 0;
-};
-
-class Interface_AdcChannelGetter {
-public:
-  virtual ~Interface_AdcChannelGetter() = default;
-
-  virtual uint32_t GetVoltageMv() const = 0;
+  virtual void SetChannelRawValue(uint32_t value) = 0;
 };

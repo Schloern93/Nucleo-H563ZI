@@ -14,13 +14,15 @@
 template <size_t NumberOfChannels> class AdcPollingConfig : public Interface_AdcConfig {
 public:
   AdcPollingConfig(AdcInstance adcInstanceInit,
-                   AdcResolution adcResolutionInit,
-                   AdcReferenceVoltage adcRefernceVoltageInit,
-                   std::array<Interface_AdcChannel *, NumberOfChannels> adcChannelInit)
+                   const AdcResolution adcResolutionInit,
+                   std::array<Interface_AdcChannelConfig *, NumberOfChannels> adcChannelInit)
       : adcInstance(adcInstanceInit),
         adcResolution(adcResolutionInit),
-        adcReferenceVoltage(adcRefernceVoltageInit),
         adcChannels(adcChannelInit) {
+    // Set ADC Resolution to channels
+    for(const auto &channel : adcChannels) {
+      channel->SetAdcResolution(GetMaxValueForResolution(adcResolution));
+    }
     InitAdcHandle();
     UpdateAdcChannels();
   }
@@ -37,7 +39,7 @@ public:
         assert(0);
       }
       uint32_t rawValue = HAL_ADC_GetValue(&hadc);
-      adcChannels[i]->SetChannelVoltageMv(CalculateChannelVoltageMv(adcReferenceVoltage, adcResolution, rawValue));
+      adcChannels[i]->SetChannelRawValue(rawValue);
     }
     if(HAL_ADC_Stop(&hadc) != HAL_OK) {
       assert(0);
@@ -46,9 +48,8 @@ public:
 
 private:
   AdcInstance adcInstance;
-  AdcResolution adcResolution;
-  AdcReferenceVoltage adcReferenceVoltage;
-  std::array<Interface_AdcChannel *, NumberOfChannels> adcChannels;
+  const AdcResolution adcResolution;
+  std::array<Interface_AdcChannelConfig *, NumberOfChannels> adcChannels;
   ADC_HandleTypeDef hadc{};
   inline static uint8_t adcInstanceCounter{0};
   static constexpr uint16_t ADC_POLL_TIMEOUT_MS = 10;
@@ -201,22 +202,13 @@ private:
     }
   }
 
-  static constexpr uint32_t CalculateChannelVoltageMv(AdcReferenceVoltage referenceVoltage,
-                                                      AdcResolution adcResolution,
-                                                      uint32_t rawValue) {
-    uint32_t retVal = 0;
-    uint32_t vref = (referenceVoltage == AdcReferenceVoltage::MV_3300) ? 3300U : 5000U;
-    retVal = (rawValue * vref) / GetMaxValueForResolution(adcResolution);
-    return retVal;
-  }
-
   static constexpr uint16_t GetMaxValueForResolution(AdcResolution res) {
     switch(res) {
     case AdcResolution::RESOLUTION_12_BIT: return (1 << 12) - 1;
     case AdcResolution::RESOLUTION_10_BIT: return (1 << 10) - 1;
     case AdcResolution::RESOLUTION_8_BIT: return (1 << 8) - 1;
     case AdcResolution::RESOLUTION_6_BIT: return (1 << 6) - 1;
-    default: assert(false); break;
+    default: assert(false); return 0;
     }
   }
 };
