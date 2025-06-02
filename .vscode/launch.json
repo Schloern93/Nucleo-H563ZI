@@ -26,7 +26,7 @@
             "request": "launch",
             "name": "Debug STM32H563 with Cortex-Debug IAR",
             "target": "arm",
-            "program": "${workspaceFolder}\\CMakeBuild\\NucleoH5.elf",
+            "program": "${workspaceFolder}\\CMakeBuild\\IAR\\NucleoH5.elf",
             "driver": "ST-LINK",
             "stopOnSymbol": "main",
             "workbenchPath": "C:\\iar\\ewarm-9.60.3",
