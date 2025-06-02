@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug STM32 with Cortex-Debug (External)",
+            "name": "Debug STM32H563 with Cortex-Debug GCC (External)",
             "type": "cortex-debug",
             "request": "launch",
             "servertype": "external", // Externer GDB-Server: TODO: This should removed after svg file available in the official openOcd package
@@ -22,43 +22,44 @@
             "preLaunchTask": "FlashSTM32WithCubeProgrammer",
         },
         {
-            "name": "Debug STM32",
-            "type": "cppdbg",
+            "type": "cspy",
             "request": "launch",
-            "program": "${workspaceFolder}/CmakeBuild/NucleoH5.elf",
-            "cwd": "${workspaceFolder}",
-            "MIMode": "gdb",
-            "miDebuggerPath": "C:/ProgramData/chocolatey/bin/arm-none-eabi-gdb.exe",
-            "setupCommands": [
-                {
-                    "text": "target remote localhost:3333",
-                    "description": "Connect to OpenOCD",
-                    "ignoreFailures": false
-                },
-                {
-                    "text": "monitor reset halt",
-                    "description": "Reset and halt the target",
-                    "ignoreFailures": false
-                },
-                {
-                    "text": "break main",
-                    "description": "Set breakpoint at main",
-                    "ignoreFailures": false
-                },
-                {
-                    "text": "break main",
-                    "description": "Set breakpoint at main",
-                    "ignoreFailures": false
-                },
-                {
-                    "text": "break main",
-                    "description": "Set breakpoint at main",
-                    "ignoreFailures": false
-                }
+            "name": "Debug STM32H563 with Cortex-Debug IAR",
+            "target": "arm",
+            "program": "${workspaceFolder}\\CMakeBuild\\NucleoH5.elf",
+            "driver": "ST-LINK",
+            "stopOnSymbol": "main",
+            "workbenchPath": "C:\\iar\\ewarm-9.60.3",
+            "driverOptions": [
+                "--crun=disabled",
+                "--drv_vector_table_base=0x08000000",
+                "--endian=little",
+                "--cpu=Cortex-M33.no_se",
+                "--fpu=VFPv5_SP",
+                "-p",
+                "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H563ZI.ddf",
+                "--drv_verify_download",
+                "--semihosting",
+                "--device=STM32H563ZI",
+                "--drv_interface=SWD",
+                "--stlink_reset_strategy=0,2",
+                "--drv_swo_clock_setup=240000000,0,2000000",
+                "--drv_catch_exceptions=0x000",
+                "--drv_debug_ap=1",
+                "--stlink_probe_supplied_power=3.3"
             ],
-            "externalConsole": false,
-            "stopAtEntry": true,
-            "serverStarted": "Info : Listening on port 3333 for gdb connections"
-        },
+            "buildBeforeDebugging": "Disabled",
+            "download": {
+                "flashLoader": "C:\\iar\\ewarm-9.60.3\\arm\\config\\flashloader\\ST\\FlashSTM32H5xxxI.board",
+                "deviceMacros": [
+                    "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx.dmac",
+                    "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_DBG.dmac",
+                    "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_TRACE.dmac"
+                ]
+            }
+            // "setupMacros": [
+            //     "${workspaceFolder}\\CMakeBuild\\nucleo_h563zi\\nucleo_h563zi_debug_info.mac"
+            // ]
+        }
     ]
 }

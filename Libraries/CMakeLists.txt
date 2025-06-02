@@ -25,21 +25,34 @@ target_link_libraries(Stm32H563Hal PUBLIC
 )
 
 # Erstelle die FreeRTOS Library
-add_library(FreeRtosKernel STATIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/tasks.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/queue.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/list.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/timers.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/event_groups.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/MemMang/heap_4.c # Falls du heap_4 nutzen willst
-)
-target_include_directories(FreeRtosKernel PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/
-)
-target_link_libraries(FreeRtosKernel PUBLIC
+if(CMAKE_C_COMPILER_ID STREQUAL "GCC")
+    message(STATUS "Using GCC Compiler")
+    set(FREERTOS_PORT GCC_ARM_CM33_NTZ_NONSECURE CACHE STRING "FreeRTOS port for GCC")
+elseif(CMAKE_C_COMPILER_ID STREQUAL "IAR")
+    message(STATUS "Using IAR Compiler")
+    set(FREERTOS_PORT IAR_ARM_CM33_NTZ_NONSECURE CACHE STRING "FreeRTOS port for IAR")
+endif()
+
+set(FREERTOS_HEAP 4)
+
+add_library(freertos_config ALIAS FreeRtosConfig) # TODO: Check why is needet herre(Without hes not find the config)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel)
+
+# add_library(FreeRtosKernel STATIC
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/tasks.c
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/queue.c
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/list.c
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/timers.c
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/event_groups.c
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/port.c
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/MemMang/heap_4.c # Falls du heap_4 nutzen willst
+# )
+# target_include_directories(FreeRtosKernel PUBLIC
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/include
+# ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure/
+# )
+target_link_libraries(freertos_kernel PUBLIC
     FreeRtosConfig
 )
 
@@ -63,9 +76,5 @@ target_include_directories(FreeRTOS_Addons PUBLIC
 )
 
 target_link_libraries(FreeRTOS_Addons PUBLIC
-    FreeRtosKernel
+    freertos_kernel
 )
-
-
-
-

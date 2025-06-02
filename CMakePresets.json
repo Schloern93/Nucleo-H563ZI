@@ -7,22 +7,30 @@
   },
   "configurePresets": [
     {
-      "name": "Development_UsingNinja",
+      "name": "Development_Using_GCC",
       "description": "Default configuration using Ninja generator",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/CmakeBuild",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "C:/ProgramData/chocolatey/bin/arm-none-eabi-gcc.exe",
-        "CMAKE_CXX_COMPILER": "C:/ProgramData/chocolatey/bin/arm-none-eabi-g++.exe",
-        "CMAKE_ASM_COMPILER": "C:/ProgramData/chocolatey/bin/arm-none-eabi-gcc.exe"
-      }
+      "binaryDir": "${sourceDir}/CmakeBuild/GCC",
+      "toolchainFile": "${sourceDir}/Toolchain/toolchain_gcc-arm.cmake"
+    },
+    {
+      "name": "Development_Using_IAR",
+      "description": "Default configuration using IAR Compiler",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/CmakeBuild/IAR",
+      "toolchainFile": "${sourceDir}/Toolchain/toolchain_iar-arm.cmake"
     }
   ],
   "buildPresets": [
     {
-      "name": "Development_UsingNinja",
-      "configurePreset": "Development_UsingNinja",
-      "description": "Default build using Ninja"
+      "name": "Development_Using_GCC",
+      "configurePreset": "Development_Using_GCC",
+      "description": "Default build GCC"
+    },
+    {
+      "name": "Development_Using_IAR",
+      "configurePreset": "Development_Using_IAR",
+      "description": "Default build using IAR"
     }
   ]
 }

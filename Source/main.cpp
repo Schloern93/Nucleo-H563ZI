@@ -29,4 +29,9 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
     assert(false);
   }
 }
+
+size_t __write(size_t handle, const void *buffer, size_t size) {
+  assert(false);
+  return size;
+}
 }

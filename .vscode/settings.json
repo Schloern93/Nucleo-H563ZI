@@ -11,6 +11,7 @@
         "stm32h5xx_hal.h": "c",
         "stm32_hal_legacy.h": "c",
         "stm32h5xx.h": "c",
-        "stm32h5xx_hal_conf.h": "c"
+        "stm32h5xx_hal_conf.h": "c",
+        "format": "cpp"
     },
 }
