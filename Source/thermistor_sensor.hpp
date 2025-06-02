@@ -10,41 +10,46 @@ struct ThermistorPoint {
   std::uint32_t resistance;
 };
 
-template <uint32_t N> class ThermistorSensor : public Interface_Sensor {
+template <uint32_t Ressistor, typename CurveType> class ThermistorSensor : public Interface_Sensor {
 public:
-  ThermistorSensor(Interface_AdcChannel &adcChannelInit,
-                   const std::array<ThermistorPoint, N> &curveInit,
-                   const uint32_t ressistorInit)
-      : adcChannel(adcChannelInit),
-        curve(curveInit),
-        ressistor(ressistorInit) {
-  }
+  ThermistorSensor() = default;
 
-  SensorData GetSensorData() override {
-    SensorData data;
+  SensorData CalculateSensorData(uint32_t adcRawValue, uint32_t vRef, uint32_t adcResolution) const override {
+    SensorData data{};
     data.unit = Units::CELCIUS;
 
-    // Read the ADC value
-    const auto adcValueMv = adcChannel.GetAdcRawValue();
+    const std::uint16_t digits = adcRawValue;
+    std::uint16_t temperature;
+    bool valid = false;
+    const auto it =
+        std::adjacent_find(std::begin(digit_points), std::end(digit_points), [digits](const auto &a, const auto &b) {
+          return (digits >= a.digits && digits <= b.digits);
+        });
+    if(it != std::end(digit_points)) {
+      ThermistorPointDigits a = *it;
+      ThermistorPointDigits b = *(it + 1);
 
-    // Convert ADC value to resistance
-    const auto resistance = (ressistor * adcValueMv) / (3300U - adcValueMv);
+      const std::int32_t temperature_step =
+          static_cast<std::int32_t>(b.kelvin10) - static_cast<std::int32_t>(a.kelvin10);
+      const std::int32_t digits_step = static_cast<std::int32_t>(b.digits) - static_cast<std::int32_t>(a.digits);
+      const std::int32_t digits_offset = static_cast<std::int32_t>(digits) - static_cast<std::int32_t>(a.digits);
 
-    // Find the corresponding temperature from the curve
-    for(const auto &point : curve) {
-      if(point.resistance <= resistance) {
-        data.data = point.celsius;
-        data.isValid = true;
-        break;
-      }
+      const std::int32_t temperature_offset = Util::DivAndRound(digits_offset * temperature_step, digits_step);
+      const std::int32_t temperature_int32 = static_cast<std::int32_t>(a.kelvin10) + temperature_offset;
+
+      temperature = static_cast<std::uint16_t>(static_cast<std::uint32_t>(temperature_int32));
+      valid = true;
+    } else if(digits <= digit_points.front().digits) {
+      temperature = digit_points.front().kelvin10;
+    } else {
+      temperature = digit_points.back().kelvin10;
     }
     return data;
   }
 
 private:
-  Interface_AdcChannel &adcChannel;
-  const std::array<ThermistorPoint, N> &curve;
-  const uint32_t ressistor;
+  const CurveType &curve;
+  const Ressistor ressistor;
 };
 
 constexpr std::array<ThermistorPoint, 30U> semitec103ATCurve = {

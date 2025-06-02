@@ -14,13 +14,13 @@
 #include "adc_polling_config.hpp"
 #include "adc_channel.hpp"
 #include "interface_adc_channel.hpp"
-// #include "thermistor_sensor.hpp"
+#include "thermistor_sensor.hpp"
 #include "mcu_temp_sensor.hpp"
 
 // Create Sensors
 // ThermistorSensor externalTempSensor(adc0, semitec103ATCurve, 10'000U);
 // ThermistorSensor internalTempSensor(adc0, semitec103ATCurve, 10'000U);
-McuTempSensor externalTempSensor;
+ThermistorSensor externalTempSensor;
 McuTempSensor internalTempSensor;
 
 // Define ADC channels
