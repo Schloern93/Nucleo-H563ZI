@@ -1,4 +1,3 @@
-
 # Set CMake to create a static library instead of an executable during compiler tests
 # This is necessary not fail if trying buil a test executable for the target platform
 # Because the c compiler create  a file which runs on arm not on the host machine
@@ -7,8 +6,9 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 # Toolchain ARM-GCC
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
+set(CMAKE_C_COMPILER_ID "IAR" FORCE)
 
-#Set Compiler
+# Set Compiler
 set(CMAKE_C_COMPILER "C:/iar/ewarm-9.60.3/arm/bin/iccarm.exe")
 set(CMAKE_CXX_COMPILER "C:/iar/ewarm-9.60.3/arm/bin/iccarm.exe")
 set(CMAKE_ASM_COMPILER "C:/iar/ewarm-9.60.3/arm/bin/iasmarm.exe")
