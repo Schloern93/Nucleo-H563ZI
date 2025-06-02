@@ -18,9 +18,7 @@
 #include "mcu_temp_sensor.hpp"
 
 // Create Sensors
-// ThermistorSensor externalTempSensor(adc0, semitec103ATCurve, 10'000U);
-// ThermistorSensor internalTempSensor(adc0, semitec103ATCurve, 10'000U);
-ThermistorSensor externalTempSensor;
+ThermistorSensor<10000, 30, semitec103ATCurve> externalTempSensor;
 McuTempSensor internalTempSensor;
 
 // Define ADC channels

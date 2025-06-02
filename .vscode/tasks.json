@@ -9,7 +9,7 @@
                 "-c",
                 "port=SWD",
                 "-d",
-                "\"${workspaceFolder}/CmakeBuild/NucleoH5.elf\"",
+                "\"${workspaceFolder}/CmakeBuild/GCC/NucleoH5.elf\"",
                 "-v"
             ],
         },

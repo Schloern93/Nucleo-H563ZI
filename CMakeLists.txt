@@ -16,7 +16,7 @@ add_definitions(-DSTM32H563xx)
 
 # TODO: Move to Toolchain files
 # Add Compiler Specific System FIles
-if(CMAKE_C_COMPILER_ID STREQUAL "GCC")
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
     message(STATUS "Using GCC-specific startup file")
     set(STARTUP_FILE Source/System/startup_stm32h563xx_gcc.s)
 elseif(CMAKE_C_COMPILER_ID STREQUAL "IAR")

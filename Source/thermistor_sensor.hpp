@@ -2,6 +2,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 
 #include "interface_adc_channel.hpp"
 
@@ -10,46 +11,51 @@ struct ThermistorPoint {
   std::uint32_t resistance;
 };
 
-template <uint32_t Ressistor, typename CurveType> class ThermistorSensor : public Interface_Sensor {
+template <uint32_t Ressistor, size_t N, const std::array<ThermistorPoint, N> &curve>
+class ThermistorSensor : public Interface_Sensor {
 public:
   ThermistorSensor() = default;
 
   SensorData CalculateSensorData(uint32_t adcRawValue, uint32_t vRef, uint32_t adcResolution) const override {
     SensorData data{};
     data.unit = Units::CELCIUS;
-
-    const std::uint16_t digits = adcRawValue;
-    std::uint16_t temperature;
-    bool valid = false;
-    const auto it =
-        std::adjacent_find(std::begin(digit_points), std::end(digit_points), [digits](const auto &a, const auto &b) {
-          return (digits >= a.digits && digits <= b.digits);
-        });
-    if(it != std::end(digit_points)) {
-      ThermistorPointDigits a = *it;
-      ThermistorPointDigits b = *(it + 1);
-
-      const std::int32_t temperature_step =
-          static_cast<std::int32_t>(b.kelvin10) - static_cast<std::int32_t>(a.kelvin10);
-      const std::int32_t digits_step = static_cast<std::int32_t>(b.digits) - static_cast<std::int32_t>(a.digits);
-      const std::int32_t digits_offset = static_cast<std::int32_t>(digits) - static_cast<std::int32_t>(a.digits);
-
-      const std::int32_t temperature_offset = Util::DivAndRound(digits_offset * temperature_step, digits_step);
-      const std::int32_t temperature_int32 = static_cast<std::int32_t>(a.kelvin10) + temperature_offset;
-
-      temperature = static_cast<std::uint16_t>(static_cast<std::uint32_t>(temperature_int32));
-      valid = true;
-    } else if(digits <= digit_points.front().digits) {
-      temperature = digit_points.front().kelvin10;
-    } else {
-      temperature = digit_points.back().kelvin10;
-    }
+    uint32_t resistance = GetResistenceFromAdcRawValue(adcRawValue, vRef, adcResolution);
+    data.data = InterpolateTemperature(resistance);
+    data.isValid = (data.data != -999);
     return data;
   }
 
 private:
-  const CurveType &curve;
-  const Ressistor ressistor;
+  uint32_t GetResistenceFromAdcRawValue(uint32_t adcRawValue, uint32_t vRef, uint32_t adcResolution) const {
+    uint32_t voltage = ((adcRawValue * vRef) / adcResolution);
+    uint32_t ressistorInOhm = ((voltage * Ressistor) / (vRef - voltage));
+    return ressistorInOhm;
+  }
+
+  int16_t InterpolateTemperature(uint32_t resistance) const {
+    int16_t interpolatedTemp = -999; // Default: Fehlerwert
+
+    if(resistance <= curve.front().resistance) {
+      interpolatedTemp = curve.front().celsius;
+    } else if(resistance >= curve.back().resistance) {
+      interpolatedTemp = curve.back().celsius;
+    } else {
+      for(size_t i = 0; i < curve.size() - 1; ++i) {
+        const auto &lower = curve[i];
+        const auto &upper = curve[i + 1];
+
+        if(resistance >= lower.resistance && resistance <= upper.resistance) {
+          uint32_t deltaRes = upper.resistance - lower.resistance;
+          uint32_t deltaTemp = upper.celsius - lower.celsius;
+          uint32_t deltaInput = resistance - lower.resistance;
+
+          interpolatedTemp = lower.celsius + static_cast<int16_t>((deltaInput * deltaTemp) / deltaRes);
+          break;
+        }
+      }
+    }
+    return interpolatedTemp;
+  }
 };
 
 constexpr std::array<ThermistorPoint, 30U> semitec103ATCurve = {

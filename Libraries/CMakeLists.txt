@@ -32,7 +32,7 @@ target_link_libraries(Stm32H563Hal PUBLIC
 )
 
 # Erstelle die FreeRTOS Library
-if(CMAKE_C_COMPILER_ID STREQUAL "GCC")
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
     message(STATUS "Using GCC Compiler")
     set(FREERTOS_PORT GCC_ARM_CM33_NTZ_NONSECURE CACHE STRING "FreeRTOS port for GCC")
 elseif(CMAKE_C_COMPILER_ID STREQUAL "IAR")
