@@ -7,6 +7,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # Project
 project(NucleoH5 LANGUAGES C CXX ASM)
+
 # Add Subdirectory for Libs
 add_subdirectory(Config)
 add_subdirectory(Libraries)
@@ -29,6 +30,11 @@ add_executable(${PROJECT_NAME}
     Source/System/system_stm32h5xx.c
     ${STARTUP_FILE}
     Source/main.cpp
+)
+
+#Set include directories
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Util
 )
 
 # Create .elf file

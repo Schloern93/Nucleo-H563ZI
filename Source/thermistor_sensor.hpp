@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #include "interface_adc_channel.hpp"
+#include "interpolate.hpp"
 
 struct ThermistorPoint {
   std::int16_t celsius;
@@ -21,7 +22,7 @@ public:
     data.unit = Units::CELCIUS;
     uint32_t resistance = GetResistenceFromAdcRawValue(adcRawValue, vRef, adcResolution);
     data.data = InterpolateTemperature(resistance);
-    data.isValid = (data.data != -999);
+    data.isValid = (data.data != 0xFFFF);
     return data;
   }
 
@@ -32,26 +33,16 @@ private:
     return ressistorInOhm;
   }
 
-  int16_t InterpolateTemperature(uint32_t resistance) const {
-    int16_t interpolatedTemp = -999; // Default: Fehlerwert
+  int32_t InterpolateTemperature(uint32_t resistance) const {
+    int32_t interpolatedTemp = 0xFFFF; // Default: Fehlerwert
 
-    if(resistance <= curve.front().resistance) {
-      interpolatedTemp = curve.front().celsius;
-    } else if(resistance >= curve.back().resistance) {
-      interpolatedTemp = curve.back().celsius;
-    } else {
-      for(size_t i = 0; i < curve.size() - 1; ++i) {
-        const auto &lower = curve[i];
-        const auto &upper = curve[i + 1];
+    for(size_t i = 0; i < curve.size() - 1; ++i) {
+      const auto &lower = curve[i];
+      const auto &upper = curve[i + 1];
 
-        if(resistance >= lower.resistance && resistance <= upper.resistance) {
-          uint32_t deltaRes = upper.resistance - lower.resistance;
-          uint32_t deltaTemp = upper.celsius - lower.celsius;
-          uint32_t deltaInput = resistance - lower.resistance;
-
-          interpolatedTemp = lower.celsius + static_cast<int16_t>((deltaInput * deltaTemp) / deltaRes);
-          break;
-        }
+      if(resistance >= lower.resistance && resistance <= upper.resistance) {
+        interpolatedTemp = Interpolate(resistance, lower.resistance, upper.resistance, lower.celsius, upper.celsius);
+        break;
       }
     }
     return interpolatedTemp;
