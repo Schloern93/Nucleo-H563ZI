@@ -29,6 +29,7 @@ endif()
 add_executable(${PROJECT_NAME}
     Source/System/system_stm32h5xx.c
     ${STARTUP_FILE}
+    Source/system_clock_configuration.cpp
     Source/main.cpp
 )
 

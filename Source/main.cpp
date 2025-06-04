@@ -1,9 +1,13 @@
 #include <cassert>
 #include <array>
 
-//
+// Hal
 #include "stm32h5xx_hal_gpio.h"
 
+// Clocks
+#include "system_clock_configuration.hpp"
+
+// Rtos
 #include "thread.hpp"
 
 // Applications Taks
@@ -16,6 +20,9 @@
 #include "interface_adc_channel.hpp"
 #include "thermistor_sensor.hpp"
 #include "mcu_temp_sensor.hpp"
+
+// Create System Clock
+SystemClockConfiguration systemClockConfiguration;
 
 // Create Sensors
 ThermistorSensor<10000, 30, semitec103ATCurve> externalTempSensor;
