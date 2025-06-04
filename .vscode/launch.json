@@ -57,7 +57,10 @@
                     "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_DBG.dmac",
                     "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_TRACE.dmac"
                 ]
-            }
+            },
+            "plugins": [
+                "C:\\iar\\ewarm-9.60.3\\arm\\plugins\\rtos\\FreeRtos\\FreeRtosArmPlugin.dll"
+            ],
             // "setupMacros": [
             //     "${workspaceFolder}\\CMakeBuild\\nucleo_h563zi\\nucleo_h563zi_debug_info.mac"
             // ]
