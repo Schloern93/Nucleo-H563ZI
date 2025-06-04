@@ -3,6 +3,7 @@
 SystemClockConfiguration::SystemClockConfiguration() {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PLL2InitTypeDef RCC_PLL2InitStruct = {0};
 
   // Configure the main internal regulator output voltage
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
@@ -36,6 +37,22 @@ SystemClockConfiguration::SystemClockConfiguration() {
   RCC_ClkInitStruct.APB3CLKDivider = RCC_HCLK_DIV1;
 
   if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
+    assert(false);
+  }
+
+  // Configure the PLL2
+  RCC_PLL2InitStruct.PLL2Source = RCC_PLL2_SOURCE_HSE;
+  RCC_PLL2InitStruct.PLL2M = 2;
+  RCC_PLL2InitStruct.PLL2N = 32;
+  RCC_PLL2InitStruct.PLL2P = 2;
+  RCC_PLL2InitStruct.PLL2Q = 2;
+  RCC_PLL2InitStruct.PLL2R = 4;
+  RCC_PLL2InitStruct.PLL2RGE = RCC_PLL2_VCIRANGE_3;
+  RCC_PLL2InitStruct.PLL2VCOSEL = RCC_PLL2_VCORANGE_WIDE;
+  RCC_PLL2InitStruct.PLL2FRACN = 0;
+  RCC_PLL2InitStruct.PLL2ClockOut = RCC_PLL2_DIVP | RCC_PLL2_DIVQ | RCC_PLL2_DIVR;
+
+  if(HAL_RCCEx_EnablePLL2(&RCC_PLL2InitStruct) != HAL_OK) {
     assert(false);
   }
 

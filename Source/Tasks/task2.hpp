@@ -18,7 +18,7 @@ public:
     // Task implementation goes here
     while(true) {
       // Do something
-      Delay(1000); // Delay for 1 second
+      // Delay(1000); // Delay for 1 second
       data[0] = externalTempSensor.GetSensorData();
       data[1] = internalTempSensor.GetSensorData();
     }

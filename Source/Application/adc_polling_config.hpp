@@ -72,7 +72,7 @@ private:
     }
 
     hadc.Instance = MapInstance(adcInstance);
-    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV6;
+    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV12;
     hadc.Init.Resolution = MapResolution(adcResolution);
     hadc.Init.ScanConvMode = ADC_SCAN_ENABLE;
     hadc.Init.ContinuousConvMode = DISABLE;

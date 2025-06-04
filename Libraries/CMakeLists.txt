@@ -16,6 +16,7 @@ add_library(Stm32H563Hal STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_adc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_adc_ex.c
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_rcc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_rcc_ex.c
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_gpio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_cortex.c
 )
