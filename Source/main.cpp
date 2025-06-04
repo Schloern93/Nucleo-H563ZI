@@ -23,17 +23,17 @@ McuTempSensor internalTempSensor;
 
 // Define ADC channels
 static constexpr size_t ADC_CHANNEL_COUNT = 2;
-AdcChannel adc0(externalTempSensor,
-                AdcChannelConfig::CHANNEL_6,
-                AdcRank::RANK_1,
-                AdcSamplingTime::CYCLES_247_5,
-                ReferenceVoltage::MV_3300);
-AdcChannel adc1(internalTempSensor,
-                AdcChannelConfig::CHANNEL_16,
-                AdcRank::RANK_2,
-                AdcSamplingTime::CYCLES_247_5,
-                ReferenceVoltage::MV_3300);
-std::array<Interface_AdcChannelConfig *, ADC_CHANNEL_COUNT> adcChannels = {&adc0, &adc1};
+AdcChannel externalTemperaturSensor(externalTempSensor,
+                                    AdcChannelConfig::CHANNEL_6,
+                                    AdcRank::RANK_1,
+                                    AdcSamplingTime::CYCLES_247_5,
+                                    ReferenceVoltage::MV_3300);
+AdcChannel mcuTempSensor(internalTempSensor,
+                         AdcChannelConfig::CHANNEL_16,
+                         AdcRank::RANK_2,
+                         AdcSamplingTime::CYCLES_247_5,
+                         ReferenceVoltage::MV_3300);
+std::array<Interface_AdcChannelConfig *, ADC_CHANNEL_COUNT> adcChannels = {&externalTemperaturSensor, &mcuTempSensor};
 
 // Create ADC
 AdcPollingConfig<ADC_CHANNEL_COUNT> adc1PollingConfig(AdcInstance::ADC_1,
@@ -42,7 +42,7 @@ AdcPollingConfig<ADC_CHANNEL_COUNT> adc1PollingConfig(AdcInstance::ADC_1,
 
 // Create tasks
 Task1 task1(adc1PollingConfig);
-Task2 task2(adc0, adc1);
+Task2 task2(externalTemperaturSensor, mcuTempSensor);
 
 int main() {
   __HAL_RCC_GPIOF_CLK_ENABLE();
@@ -73,6 +73,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
   }
 }
 
+// Needet for zhe IAR stdLib
 size_t __write(size_t handle, const void *buffer, size_t size) {
   assert(false);
   return size;
