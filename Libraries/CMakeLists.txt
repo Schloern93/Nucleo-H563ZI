@@ -13,6 +13,13 @@ target_include_directories(CmsisDeviceH5 INTERFACE
 # Erstelle  stm32h5xx hal lib
 add_library(Stm32H563Hal STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_adc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_adc_ex.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_ll_rcc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_gpio.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_dma.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_dma_ex.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/stm32h5xx-hal-driver/Src/stm32h5xx_hal_cortex.c
 )
 target_compile_definitions(Stm32H563Hal PUBLIC STM32H563xx)
 target_include_directories(Stm32H563Hal PUBLIC
@@ -25,7 +32,7 @@ target_link_libraries(Stm32H563Hal PUBLIC
 )
 
 # Erstelle die FreeRTOS Library
-if(CMAKE_C_COMPILER_ID STREQUAL "GCC")
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
     message(STATUS "Using GCC Compiler")
     set(FREERTOS_PORT GCC_ARM_CM33_NTZ_NONSECURE CACHE STRING "FreeRTOS port for GCC")
 elseif(CMAKE_C_COMPILER_ID STREQUAL "IAR")

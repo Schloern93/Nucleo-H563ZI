@@ -17,7 +17,7 @@ add_definitions(-DSTM32H563xx)
 
 # TODO: Move to Toolchain files
 # Add Compiler Specific System FIles
-if(CMAKE_C_COMPILER_ID STREQUAL "GCC")
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
     message(STATUS "Using GCC-specific startup file")
     set(STARTUP_FILE Source/System/startup_stm32h563xx_gcc.s)
 elseif(CMAKE_C_COMPILER_ID STREQUAL "IAR")
@@ -30,6 +30,13 @@ add_executable(${PROJECT_NAME}
     Source/System/system_stm32h5xx.c
     ${STARTUP_FILE}
     Source/main.cpp
+)
+
+#Set include directories
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/Application
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/Tasks
+    ${CMAKE_CURRENT_SOURCE_DIR}/Util
 )
 
 # Create .elf file
