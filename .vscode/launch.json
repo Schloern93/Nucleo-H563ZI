@@ -20,6 +20,7 @@
             ],
             "gdbTarget": "localhost:3333",
             "preLaunchTask": "FlashSTM32WithCubeProgrammer",
+            "rtos": "FreeRTOS",
         },
         {
             "type": "cspy",

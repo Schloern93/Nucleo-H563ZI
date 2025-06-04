@@ -380,7 +380,7 @@
  * functions introduce a dependency on string formatting functions that would
  * otherwise not exist - hence they are kept separate.  Defaults to 0 if left
  * undefined. */
-#define configUSE_STATS_FORMATTING_FUNCTIONS 0
+#define configUSE_STATS_FORMATTING_FUNCTIONS 1
 
 /******************************************************************************/
 /* Co-routine related definitions. ********************************************/
@@ -637,7 +637,7 @@
 #define INCLUDE_vTaskDelay 1
 #define INCLUDE_xTaskGetSchedulerState 1
 #define INCLUDE_xTaskGetCurrentTaskHandle 1
-#define INCLUDE_uxTaskGetStackHighWaterMark 0
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 #define INCLUDE_xTaskGetIdleTaskHandle 0
 #define INCLUDE_eTaskGetState 0
 #define INCLUDE_xEventGroupSetBitFromISR 1
