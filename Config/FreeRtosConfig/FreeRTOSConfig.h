@@ -650,5 +650,7 @@
 #define vPortSVCHandler SVC_Handler
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() ConfigureTim2ForFreeRtosRunTimeStatsTimer()
+#define portGET_RUN_TIME_COUNTER_VALUE() GetFreeRtosRunTimeStatsTimerValue()
 
 #endif /* FREERTOS_CONFIG_H */

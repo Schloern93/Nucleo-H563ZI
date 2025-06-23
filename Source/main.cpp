@@ -6,6 +6,7 @@
 
 // Clocks
 #include "system_clock_configuration.hpp"
+#include "free_rtos_run_time_stats_timer.hpp"
 
 // Rtos
 #include "thread.hpp"
@@ -80,6 +81,7 @@ int main() {
 
   __enable_irq();
 
+  ConfigureTim2ForFreeRtosRunTimeStatsTimer();
   cpp_freertos::Thread::StartScheduler();
 
   while(true) {
