@@ -13,7 +13,6 @@
 // Applications Taks
 #include "task1.hpp"
 #include "task2.hpp"
-#include "task3.hpp"
 
 // ADC configuration
 #include "adc_polling_config.hpp"
@@ -44,17 +43,16 @@ AdcChannel mcuTempSensor(internalTempSensor,
 std::array<Interface_AdcChannelConfig *, ADC_CHANNEL_COUNT> adcChannels = {&externalTemperaturSensor, &mcuTempSensor};
 
 // Create ADC
-// AdcPollingConfig<ADC_CHANNEL_COUNT> adc1PollingConfig(AdcInstance::ADC_1,
-//                                                       AdcResolution::RESOLUTION_12_BIT,
-//                                                       adcChannels);
+AdcPollingConfig<ADC_CHANNEL_COUNT> adc1PollingConfig(AdcInstance::ADC_1,
+                                                      AdcResolution::RESOLUTION_12_BIT,
+                                                      adcChannels);
 
 // Create tasks
-// Task1 task1(adc1PollingConfig);
-// Task2 task2(externalTemperaturSensor, mcuTempSensor);
-Task3 task3;
+Task1 task1(adc1PollingConfig);
+Task2 task2(externalTemperaturSensor, mcuTempSensor);
 
 int main() {
-  HAL_Init();
+  // HAL_Init();
 
   __HAL_RCC_GPIOF_CLK_ENABLE();
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -70,14 +68,15 @@ int main() {
   GPIO_InitStructNext.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStructNext);
 
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  GPIO_InitTypeDef GPIO_InitStructNextNext = {0};
-  GPIO_InitStructNextNext.Pin = GPIO_PIN_8;
-  GPIO_InitStructNextNext.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStructNextNext.Pull = GPIO_NOPULL;
-  GPIO_InitStructNextNext.Speed = GPIO_SPEED_FREQ_HIGH;
-  GPIO_InitStructNextNext.Alternate = GPIO_AF0_MCO;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStructNextNext);
+  // __HAL_RCC_GPIOA_CLK_ENABLE();
+  // GPIO_InitTypeDef GPIO_InitStructNextNext = {0};
+  // GPIO_InitStructNextNext.Pin = GPIO_PIN_8;
+  // GPIO_InitStructNextNext.Mode = GPIO_MODE_AF_PP;
+  // GPIO_InitStructNextNext.Pull = GPIO_NOPULL;
+  // GPIO_InitStructNextNext.Speed = GPIO_SPEED_FREQ_HIGH;
+  // GPIO_InitStructNextNext.Alternate = GPIO_AF0_MCO;
+  // HAL_GPIO_Init(GPIOA, &GPIO_InitStructNextNext);
+  // HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_PLL1Q, RCC_MCODIV_1);
 
   __enable_irq();
 
@@ -85,7 +84,6 @@ int main() {
 
   while(true) {
   }
-  return 0;
 }
 
 extern "C" {

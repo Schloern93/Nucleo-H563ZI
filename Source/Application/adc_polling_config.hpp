@@ -32,19 +32,22 @@ public:
   }
 
   void UpdateAdcChannels() override {
-    // if(HAL_ADC_Start(&hadc) != HAL_OK) {
-    //   assert(0);
-    // }
-    // for(size_t i = 0; i < NumberOfChannels; ++i) {
-    //   if(HAL_ADC_PollForConversion(&hadc, ADC_POLL_TIMEOUT_MS) != HAL_OK) {
-    //     assert(0);
-    //   }
-    //   uint32_t rawValue = HAL_ADC_GetValue(&hadc);
-    //   adcChannels[i]->SetChannelRawValue(rawValue);
-    // }
-    // if(HAL_ADC_Stop(&hadc) != HAL_OK) {
-    //   assert(0);
-    // }
+    if(HAL_ADC_Start(&hadc) != HAL_OK) {
+      assert(0);
+    }
+
+    if(HAL_ADC_PollForConversion(&hadc, ADC_POLL_TIMEOUT_MS) != HAL_OK) {
+      assert(0);
+    }
+
+    for(size_t i = 0; i < NumberOfChannels; ++i) {
+      uint32_t rawValue = HAL_ADC_GetValue(&hadc);
+      adcChannels[i]->SetChannelRawValue(rawValue);
+    }
+
+    if(HAL_ADC_Stop(&hadc) != HAL_OK) {
+      assert(0);
+    }
   }
 
 private:
@@ -74,7 +77,7 @@ private:
     }
 
     hadc.Instance = MapInstance(adcInstance);
-    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV4;
+    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
     hadc.Init.Resolution = MapResolution(adcResolution);
     hadc.Init.ScanConvMode = ADC_SCAN_ENABLE;
     hadc.Init.ContinuousConvMode = DISABLE;
