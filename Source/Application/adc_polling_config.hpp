@@ -7,6 +7,7 @@
 #include "stm32h5xx_hal_adc.h"
 #include "stm32h5xx_hal_adc_ex.h"
 #include "stm32h5xx_hal_rcc.h"
+#include "stm32h5xx_hal_rcc_ex.h"
 
 #include "interface_adc_config.hpp"
 #include "interface_adc_channel.hpp"
@@ -24,26 +25,26 @@ public:
       channel->SetAdcResolution(GetMaxValueForResolution(adcResolution));
     }
     InitAdcHandle();
-    UpdateAdcChannels();
+    // UpdateAdcChannels();
   }
   ~AdcPollingConfig() override {
     DeinitAdcHandle();
   }
 
   void UpdateAdcChannels() override {
-    if(HAL_ADC_Start(&hadc) != HAL_OK) {
-      assert(0);
-    }
-    for(size_t i = 0; i < NumberOfChannels; ++i) {
-      if(HAL_ADC_PollForConversion(&hadc, ADC_POLL_TIMEOUT_MS) != HAL_OK) {
-        assert(0);
-      }
-      uint32_t rawValue = HAL_ADC_GetValue(&hadc);
-      adcChannels[i]->SetChannelRawValue(rawValue);
-    }
-    if(HAL_ADC_Stop(&hadc) != HAL_OK) {
-      assert(0);
-    }
+    // if(HAL_ADC_Start(&hadc) != HAL_OK) {
+    //   assert(0);
+    // }
+    // for(size_t i = 0; i < NumberOfChannels; ++i) {
+    //   if(HAL_ADC_PollForConversion(&hadc, ADC_POLL_TIMEOUT_MS) != HAL_OK) {
+    //     assert(0);
+    //   }
+    //   uint32_t rawValue = HAL_ADC_GetValue(&hadc);
+    //   adcChannels[i]->SetChannelRawValue(rawValue);
+    // }
+    // if(HAL_ADC_Stop(&hadc) != HAL_OK) {
+    //   assert(0);
+    // }
   }
 
 private:
@@ -55,6 +56,7 @@ private:
   static constexpr uint16_t ADC_POLL_TIMEOUT_MS = 10;
 
   void InitAdcHandle() {
+    __HAL_RCC_ADCDAC_CONFIG(RCC_ADCDACCLKSOURCE_PLL2R);
     __HAL_RCC_ADC_CLK_ENABLE();
 
     if(adcInstance == AdcInstance::ADC_1) {
@@ -72,7 +74,7 @@ private:
     }
 
     hadc.Instance = MapInstance(adcInstance);
-    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV12;
+    hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV4;
     hadc.Init.Resolution = MapResolution(adcResolution);
     hadc.Init.ScanConvMode = ADC_SCAN_ENABLE;
     hadc.Init.ContinuousConvMode = DISABLE;
@@ -204,10 +206,10 @@ private:
 
   static constexpr uint16_t GetMaxValueForResolution(AdcResolution res) {
     switch(res) {
-    case AdcResolution::RESOLUTION_12_BIT: return (1 << 12) - 1;
-    case AdcResolution::RESOLUTION_10_BIT: return (1 << 10) - 1;
-    case AdcResolution::RESOLUTION_8_BIT: return (1 << 8) - 1;
-    case AdcResolution::RESOLUTION_6_BIT: return (1 << 6) - 1;
+    case AdcResolution::RESOLUTION_12_BIT: return (1 << 12);
+    case AdcResolution::RESOLUTION_10_BIT: return (1 << 10);
+    case AdcResolution::RESOLUTION_8_BIT: return (1 << 8);
+    case AdcResolution::RESOLUTION_6_BIT: return (1 << 6);
     default: assert(false); return 0;
     }
   }

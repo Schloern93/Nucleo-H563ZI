@@ -35,6 +35,7 @@ add_executable(${PROJECT_NAME}
 
 #Set include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/
     ${CMAKE_CURRENT_SOURCE_DIR}/Source/Application
     ${CMAKE_CURRENT_SOURCE_DIR}/Source/Tasks
     ${CMAKE_CURRENT_SOURCE_DIR}/Util

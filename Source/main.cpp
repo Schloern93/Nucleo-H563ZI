@@ -13,6 +13,7 @@
 // Applications Taks
 #include "task1.hpp"
 #include "task2.hpp"
+#include "task3.hpp"
 
 // ADC configuration
 #include "adc_polling_config.hpp"
@@ -43,21 +44,42 @@ AdcChannel mcuTempSensor(internalTempSensor,
 std::array<Interface_AdcChannelConfig *, ADC_CHANNEL_COUNT> adcChannels = {&externalTemperaturSensor, &mcuTempSensor};
 
 // Create ADC
-AdcPollingConfig<ADC_CHANNEL_COUNT> adc1PollingConfig(AdcInstance::ADC_1,
-                                                      AdcResolution::RESOLUTION_12_BIT,
-                                                      adcChannels);
+// AdcPollingConfig<ADC_CHANNEL_COUNT> adc1PollingConfig(AdcInstance::ADC_1,
+//                                                       AdcResolution::RESOLUTION_12_BIT,
+//                                                       adcChannels);
 
 // Create tasks
-Task1 task1(adc1PollingConfig);
-Task2 task2(externalTemperaturSensor, mcuTempSensor);
+// Task1 task1(adc1PollingConfig);
+// Task2 task2(externalTemperaturSensor, mcuTempSensor);
+Task3 task3;
 
 int main() {
+  HAL_Init();
+
   __HAL_RCC_GPIOF_CLK_ENABLE();
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   GPIO_InitStruct.Pin = GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  GPIO_InitTypeDef GPIO_InitStructNext = {0};
+  GPIO_InitStructNext.Pin = GPIO_PIN_0;
+  GPIO_InitStructNext.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStructNext.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStructNext);
+
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  GPIO_InitTypeDef GPIO_InitStructNextNext = {0};
+  GPIO_InitStructNextNext.Pin = GPIO_PIN_8;
+  GPIO_InitStructNextNext.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStructNextNext.Pull = GPIO_NOPULL;
+  GPIO_InitStructNextNext.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStructNextNext.Alternate = GPIO_AF0_MCO;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStructNextNext);
+
+  __enable_irq();
 
   cpp_freertos::Thread::StartScheduler();
 
