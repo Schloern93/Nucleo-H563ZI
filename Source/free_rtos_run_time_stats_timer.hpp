@@ -14,7 +14,7 @@ void ConfigureTim2ForFreeRtosRunTimeStatsTimer() {
 
   // Configure TIM2
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 24999;
+  htim2.Init.Prescaler = (uint32_t)(HAL_RCC_GetPCLK1Freq() / 1000000) - 1; // Prescaler for 1 MHz
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 0xFFFFFFFF;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -30,6 +30,8 @@ void ConfigureTim2ForFreeRtosRunTimeStatsTimer() {
 }
 
 uint32_t GetFreeRtosRunTimeStatsTimerValue(void) {
-  return __HAL_TIM_GET_COUNTER(&htim2);
+  uint32_t currentTime = 0;
+  currentTime = __HAL_TIM_GET_COUNTER(&htim2);
+  return currentTime;
 }
 }

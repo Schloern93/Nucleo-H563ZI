@@ -646,6 +646,8 @@
 #define INCLUDE_xTaskGetHandle 0
 #define INCLUDE_xTaskResumeFromISR 1
 
+#define configRECORD_STACK_HIGH_ADDRESS 1
+
 /* Map IR-Vectortabels to Free RTOS*/
 #define vPortSVCHandler SVC_Handler
 #define xPortPendSVHandler PendSV_Handler
