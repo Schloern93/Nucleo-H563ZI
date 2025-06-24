@@ -16,6 +16,7 @@
             "runToEntryPoint": "main",
             "svdFile": "${workspaceFolder}/Debug/STM32H563.svd",
             "postRestartCommands": [
+                "monitor arm semihosting enable",
                 "monitor reset halt",
             ],
             "gdbTarget": "localhost:3333",
