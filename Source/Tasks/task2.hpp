@@ -27,7 +27,6 @@ public:
       volatile uint32_t dummy = data[0].data + data[1].data; // Dummy operation to prevent optimization
       char buffer[160];
       vTaskGetRunTimeStats(buffer);
-      printf("%s\n", buffer);
     }
   }
 
