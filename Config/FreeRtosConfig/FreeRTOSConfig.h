@@ -51,7 +51,7 @@
  * The default value is set to 20MHz and matches the QEMU demo settings.  Your
  * application will certainly need a different value so set this correctly.
  * This is very often, but not always, equal to the main system clock frequency. */
-#define configCPU_CLOCK_HZ ((unsigned long)20000000)
+#define configCPU_CLOCK_HZ ((unsigned long)250000000)
 
 /* configSYSTICK_CLOCK_HZ is an optional parameter for ARM Cortex-M ports only.
  *
@@ -75,7 +75,7 @@
 
 /* configTICK_RATE_HZ sets frequency of the tick interrupt in Hz, normally
  * calculated from the configCPU_CLOCK_HZ value. */
-#define configTICK_RATE_HZ 100
+#define configTICK_RATE_HZ 1000
 
 /* Set configUSE_PREEMPTION to 1 to use pre-emptive scheduling.  Set
  * configUSE_PREEMPTION to 0 to use co-operative scheduling.
@@ -87,7 +87,7 @@
  * configUSE_TIME_SLICING to 0 to prevent the scheduler switching between Ready
  * state tasks just because there was a tick interrupt.  See
  * https://freertos.org/single-core-amp-smp-rtos-scheduling.html. */
-#define configUSE_TIME_SLICING 0
+#define configUSE_TIME_SLICING 1
 
 /* Set configUSE_PORT_OPTIMISED_TASK_SELECTION to 1 to select the next task to
  * run using an algorithm optimised to the instruction set of the target hardware -
@@ -112,7 +112,7 @@
  * (in words, not in bytes!).  The kernel does not use this constant for any other
  * purpose.  Demo applications use the constant to make the demos somewhat portable
  * across hardware architectures. */
-#define configMINIMAL_STACK_SIZE 128
+#define configMINIMAL_STACK_SIZE 60
 
 /* configMAX_TASK_NAME_LEN sets the maximum length (in characters) of a task's
  * human readable name.  Includes the NULL terminator. */
@@ -367,7 +367,7 @@
  * processing time used by each task.  Set to 0 to not collect the data.  The
  * application writer needs to provide a clock source if set to 1.  Defaults to 0
  * if left undefined.  See https://www.freertos.org/rtos-run-time-stats.html. */
-#define configGENERATE_RUN_TIME_STATS 0
+#define configGENERATE_RUN_TIME_STATS 1
 
 /* Set configUSE_TRACE_FACILITY to include additional task structure members
  * are used by trace and visualisation functions and tools.  Set to 0 to exclude
@@ -380,7 +380,7 @@
  * functions introduce a dependency on string formatting functions that would
  * otherwise not exist - hence they are kept separate.  Defaults to 0 if left
  * undefined. */
-#define configUSE_STATS_FORMATTING_FUNCTIONS 0
+#define configUSE_STATS_FORMATTING_FUNCTIONS 1
 
 /******************************************************************************/
 /* Co-routine related definitions. ********************************************/
@@ -623,7 +623,7 @@
 #define configUSE_RECURSIVE_MUTEXES 1
 #define configUSE_COUNTING_SEMAPHORES 1
 #define configUSE_QUEUE_SETS 0
-#define configUSE_APPLICATION_TASK_TAG 0
+#define configUSE_APPLICATION_TASK_TAG 1
 
 /* Set the following INCLUDE_* constants to 1 to incldue the named API function,
  * or 0 to exclude the named API function.  Most linkers will remove unused
@@ -637,7 +637,7 @@
 #define INCLUDE_vTaskDelay 1
 #define INCLUDE_xTaskGetSchedulerState 1
 #define INCLUDE_xTaskGetCurrentTaskHandle 1
-#define INCLUDE_uxTaskGetStackHighWaterMark 0
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 #define INCLUDE_xTaskGetIdleTaskHandle 0
 #define INCLUDE_eTaskGetState 0
 #define INCLUDE_xEventGroupSetBitFromISR 1
@@ -646,9 +646,13 @@
 #define INCLUDE_xTaskGetHandle 0
 #define INCLUDE_xTaskResumeFromISR 1
 
+#define configRECORD_STACK_HIGH_ADDRESS 1
+
 /* Map IR-Vectortabels to Free RTOS*/
 #define vPortSVCHandler SVC_Handler
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() ConfigureTim2ForFreeRtosRunTimeStatsTimer()
+#define portGET_RUN_TIME_COUNTER_VALUE() GetFreeRtosRunTimeStatsTimerValue()
 
 #endif /* FREERTOS_CONFIG_H */

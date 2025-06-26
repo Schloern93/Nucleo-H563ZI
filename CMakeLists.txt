@@ -29,13 +29,16 @@ endif()
 add_executable(${PROJECT_NAME}
     Source/System/system_stm32h5xx.c
     ${STARTUP_FILE}
+    Source/Clocks/system_clock_configuration.cpp
     Source/main.cpp
 )
 
 #Set include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/
     ${CMAKE_CURRENT_SOURCE_DIR}/Source/Application
     ${CMAKE_CURRENT_SOURCE_DIR}/Source/Tasks
+    ${CMAKE_CURRENT_SOURCE_DIR}/Source/Clocks
     ${CMAKE_CURRENT_SOURCE_DIR}/Util
 )
 

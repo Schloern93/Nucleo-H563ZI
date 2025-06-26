@@ -1,9 +1,14 @@
 #include <cassert>
 #include <array>
 
-//
+// Hal
 #include "stm32h5xx_hal_gpio.h"
 
+// Clocks
+#include "system_clock_configuration.hpp"
+#include "free_rtos_run_time_stats_timer.hpp"
+
+// Rtos
 #include "thread.hpp"
 
 // Applications Taks
@@ -16,6 +21,9 @@
 #include "interface_adc_channel.hpp"
 #include "thermistor_sensor.hpp"
 #include "mcu_temp_sensor.hpp"
+
+// Create System Clock
+SystemClockConfiguration systemClockConfiguration;
 
 // Create Sensors
 ThermistorSensor<10000, 30, semitec103ATCurve> externalTempSensor;
@@ -45,6 +53,8 @@ Task1 task1(adc1PollingConfig);
 Task2 task2(externalTemperaturSensor, mcuTempSensor);
 
 int main() {
+  // HAL_Init();
+
   __HAL_RCC_GPIOF_CLK_ENABLE();
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   GPIO_InitStruct.Pin = GPIO_PIN_12;
@@ -52,11 +62,30 @@ int main() {
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+  GPIO_InitTypeDef GPIO_InitStructNext = {0};
+  GPIO_InitStructNext.Pin = GPIO_PIN_0;
+  GPIO_InitStructNext.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStructNext.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStructNext);
+
+  // __HAL_RCC_GPIOA_CLK_ENABLE();
+  // GPIO_InitTypeDef GPIO_InitStructNextNext = {0};
+  // GPIO_InitStructNextNext.Pin = GPIO_PIN_8;
+  // GPIO_InitStructNextNext.Mode = GPIO_MODE_AF_PP;
+  // GPIO_InitStructNextNext.Pull = GPIO_NOPULL;
+  // GPIO_InitStructNextNext.Speed = GPIO_SPEED_FREQ_HIGH;
+  // GPIO_InitStructNextNext.Alternate = GPIO_AF0_MCO;
+  // HAL_GPIO_Init(GPIOA, &GPIO_InitStructNextNext);
+  // HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_PLL1Q, RCC_MCODIV_1);
+
+  __enable_irq();
+
+  ConfigureTim2ForFreeRtosRunTimeStatsTimer();
   cpp_freertos::Thread::StartScheduler();
 
   while(true) {
   }
-  return 0;
 }
 
 extern "C" {

@@ -16,8 +16,6 @@ public:
   void Run() override {
 
     while(true) {
-      // Do something
-      Delay(500); // Delay for 1 second
       adcPollingConfig.UpdateAdcChannels();
     }
   }

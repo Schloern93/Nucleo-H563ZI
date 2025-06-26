@@ -16,10 +16,12 @@
             "runToEntryPoint": "main",
             "svdFile": "${workspaceFolder}/Debug/STM32H563.svd",
             "postRestartCommands": [
+                "monitor arm semihosting enable",
                 "monitor reset halt",
             ],
             "gdbTarget": "localhost:3333",
             "preLaunchTask": "FlashSTM32WithCubeProgrammer",
+            "rtos": "FreeRTOS",
         },
         {
             "type": "cspy",
@@ -56,7 +58,10 @@
                     "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_DBG.dmac",
                     "C:\\iar\\ewarm-9.60.3\\arm\\config\\debugger\\ST\\STM32H5xx_TRACE.dmac"
                 ]
-            }
+            },
+            "plugins": [
+                "C:\\iar\\ewarm-9.60.3\\arm\\plugins\\rtos\\FreeRtos\\FreeRtosArmPlugin.dll"
+            ],
             // "setupMacros": [
             //     "${workspaceFolder}\\CMakeBuild\\nucleo_h563zi\\nucleo_h563zi_debug_info.mac"
             // ]
