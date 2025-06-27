@@ -8,7 +8,8 @@
 
 class Task2 : public cpp_freertos::Thread {
 public:
-  Task2(Interface_SensorData &externalTempSensorInit, Interface_SensorData &internalTempSensorInit)
+  Task2(Interface_SensorData<Units::Celsius> &externalTempSensorInit,
+        Interface_SensorData<Units::Celsius> &internalTempSensorInit)
       : cpp_freertos::Thread("Task2", 260U, (configMAX_PRIORITIES - 1U)),
         externalTempSensor(externalTempSensorInit),
         internalTempSensor(internalTempSensorInit) {
@@ -24,15 +25,17 @@ public:
       }
       data[0] = externalTempSensor.GetSensorData();
       data[1] = internalTempSensor.GetSensorData();
-      volatile uint32_t dummy = data[0].data + data[1].data; // Dummy operation to prevent optimization
+      auto asdasdasdasd = data[1].value.raw();
+      auto kjkjkjkjk = data[0].value.cast<Units::DeciCelsius>();
+
       char buffer[160];
       vTaskGetRunTimeStats(buffer);
     }
   }
 
 private:
-  Interface_SensorData &externalTempSensor;
-  Interface_SensorData &internalTempSensor;
+  Interface_SensorData<Units::Celsius> &externalTempSensor;
+  Interface_SensorData<Units::Celsius> &internalTempSensor;
   Timeout timer;
-  SensorData data[2]{};
+  SensorData<Units::Celsius> data[2]{};
 };

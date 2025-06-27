@@ -3,28 +3,33 @@
 
 #include <ratio>
 
-#include "quantity.hpp"
+#include "quanity.hpp"
 
-namespace units {
+namespace Units {
 
-// ─── Unit-Tags ──────────────────────────────────────────────────────────
-struct Celsius {};
-struct Kelvin {};
-struct VoltTag {};
-// …
+struct UnitCelsius {};
+struct UnitKelvin {};
+struct UnitVolt {};
 
-// ─── Alias-Typen (Name = Skala + Einheit) ──────────────────────────────
-using DeciCelsius = Quantity<Celsius, int16_t, std::ratio<1, 10>>; // 0,1 °C
-using DeciKelvin = Quantity<Kelvin, int16_t, std::ratio<1, 10>>;   // 0,1 K
-using MilliVolt = Quantity<VoltTag, int32_t, std::milli>;          // 1 mV
-using Volt = Quantity<VoltTag, int32_t>;                           // 1 V
+using Celsius = Quantity<UnitCelsius, int16_t>;                        // 1 °C
+using DeciCelsius = Quantity<UnitCelsius, int16_t, std::ratio<1, 10>>; // 0,1 °C
+using Kelvin = Quantity<UnitKelvin, int16_t>;                          // 1 K
+using DeciKelvin = Quantity<UnitKelvin, int16_t, std::ratio<1, 10>>;   // 0,1 K
+using Volt = Quantity<UnitVolt, int32_t>;                              // 1 V
+using MilliVolt = Quantity<UnitVolt, int32_t, std::milli>;             // 1 mV
 
-// ─── Einheiten­wechsel mit Offset ──────────────────────────────────────
+// Conversion functions
+constexpr DeciKelvin toKelvin(Celsius c) {
+  return DeciKelvin(c.raw() + 273);
+}
 constexpr DeciKelvin toKelvin(DeciCelsius c) {
-  return DeciKelvin{c.raw() + 2731};
+  return DeciKelvin(c.raw() + 2731);
+}
+constexpr DeciCelsius toCelsius(Kelvin k) {
+  return DeciCelsius(k.raw() - 273);
 }
 constexpr DeciCelsius toCelsius(DeciKelvin k) {
-  return DeciCelsius{k.raw() - 2731};
+  return DeciCelsius(k.raw() - 2731);
 }
 
-} // namespace units
+} // namespace Units

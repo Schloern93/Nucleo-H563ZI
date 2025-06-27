@@ -22,6 +22,8 @@
 #include "thermistor_sensor.hpp"
 #include "mcu_temp_sensor.hpp"
 
+// Units
+
 // Create System Clock
 SystemClockConfiguration systemClockConfiguration;
 
@@ -31,16 +33,16 @@ McuTempSensor internalTempSensor;
 
 // Define ADC channels
 static constexpr size_t ADC_CHANNEL_COUNT = 2;
-AdcChannel externalTemperaturSensor(externalTempSensor,
-                                    AdcChannelConfig::CHANNEL_6,
-                                    AdcRank::RANK_1,
-                                    AdcSamplingTime::CYCLES_247_5,
-                                    ReferenceVoltage::MV_3300);
-AdcChannel mcuTempSensor(internalTempSensor,
-                         AdcChannelConfig::CHANNEL_16,
-                         AdcRank::RANK_2,
-                         AdcSamplingTime::CYCLES_247_5,
-                         ReferenceVoltage::MV_3300);
+AdcChannel<Units::Celsius> externalTemperaturSensor(externalTempSensor,
+                                                    AdcChannelConfig::CHANNEL_6,
+                                                    AdcRank::RANK_1,
+                                                    AdcSamplingTime::CYCLES_247_5,
+                                                    ReferenceVoltage::MV_3300);
+AdcChannel<Units::Celsius> mcuTempSensor(internalTempSensor,
+                                         AdcChannelConfig::CHANNEL_16,
+                                         AdcRank::RANK_2,
+                                         AdcSamplingTime::CYCLES_247_5,
+                                         ReferenceVoltage::MV_3300);
 std::array<Interface_AdcChannelConfig *, ADC_CHANNEL_COUNT> adcChannels = {&externalTemperaturSensor, &mcuTempSensor};
 
 // Create ADC

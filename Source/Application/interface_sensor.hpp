@@ -3,24 +3,20 @@
 
 #include <cstdint>
 
-enum class Units { NONE, CELCIUS, VOLTAGE };
+#include "sensor_data.hpp"
 
-struct SensorData {
-  int32_t data{};
-  Units unit{Units::NONE};
-  bool isValid{false};
-};
-
-class Interface_Sensor {
+template <typename QuantityT> class Interface_Sensor {
 public:
   virtual ~Interface_Sensor() = default;
 
-  virtual SensorData CalculateSensorData(uint32_t adcRawValue, uint32_t vRef, uint32_t adcResolution) const = 0;
+  virtual SensorData<QuantityT> CalculateSensorData(uint32_t adcRawValue,
+                                                    uint32_t vRef,
+                                                    uint32_t adcResolution) const = 0;
 };
 
-class Interface_SensorData {
+template <typename QuantityT> class Interface_SensorData {
 public:
   virtual ~Interface_SensorData() = default;
 
-  virtual SensorData GetSensorData() const = 0;
+  virtual SensorData<QuantityT> GetSensorData() const = 0;
 };

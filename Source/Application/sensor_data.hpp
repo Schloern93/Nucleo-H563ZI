@@ -1,8 +1,9 @@
-// sensor_data.hpp
+
 #pragma once
-#include <cstdint>
+
+#include "units.hpp"
 
 template <typename QuantityT> struct SensorData {
-  QuantityT value; // z. B. units::DeciCelsius
-  bool valid;
+  QuantityT value;
+  bool isValid;
 };

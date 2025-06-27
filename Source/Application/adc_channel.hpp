@@ -4,9 +4,10 @@
 #include "interface_adc_channel.hpp"
 #include "interface_sensor.hpp"
 
-class AdcChannel : public Interface_AdcChannelConfig, public Interface_SensorData {
+template <typename QuantityT>
+class AdcChannel : public Interface_AdcChannelConfig, public Interface_SensorData<QuantityT> {
 public:
-  AdcChannel(const Interface_Sensor &sensorInit,
+  AdcChannel(const Interface_Sensor<QuantityT> &sensorInit,
              const AdcChannelConfig channelInit,
              const AdcRank rankInit,
              const AdcSamplingTime samplingTimeInit,
@@ -39,12 +40,12 @@ public:
     }
   }
 
-  SensorData GetSensorData() const override {
+  SensorData<QuantityT> GetSensorData() const override {
     return sensor.CalculateSensorData(channelRawValue, referenceVoltage, adcResolution);
   }
 
 private:
-  const Interface_Sensor &sensor;
+  const Interface_Sensor<QuantityT> &sensor;
   const AdcChannelConfig channel{};
   const AdcRank rank{};
   const AdcSamplingTime samplingTime{};

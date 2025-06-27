@@ -5,7 +5,9 @@
 #include <cstdint>
 
 #include "interface_adc_channel.hpp"
+#include "interface_sensor.hpp"
 #include "interpolate.hpp"
+#include "sensor_data.hpp"
 
 struct ThermistorPoint {
   std::int16_t celsius;
@@ -13,16 +15,19 @@ struct ThermistorPoint {
 };
 
 template <uint32_t Ressistor, size_t N, const std::array<ThermistorPoint, N> &curve>
-class ThermistorSensor : public Interface_Sensor {
+class ThermistorSensor : public Interface_Sensor<Units::Celsius> {
 public:
   ThermistorSensor() = default;
 
-  SensorData CalculateSensorData(uint32_t adcRawValue, uint32_t vRef, uint32_t adcResolution) const override {
-    SensorData data{};
-    data.unit = Units::CELCIUS;
+  SensorData<Units::Celsius> CalculateSensorData(uint32_t adcRawValue,
+                                                 uint32_t vRef,
+                                                 uint32_t adcResolution) const override {
+    SensorData<Units::Celsius> data;
     uint32_t resistance = GetResistenceFromAdcRawValue(adcRawValue, vRef, adcResolution);
-    data.data = InterpolateTemperature(resistance);
-    data.isValid = (data.data != 0xFFFF);
+    int32_t interpolatedTemp = InterpolateTemperature(resistance);
+    Units::Celsius celciusValue{static_cast<int16_t>(interpolatedTemp)};
+    data.value = celciusValue;
+    data.isValid = true;
     return data;
   }
 
