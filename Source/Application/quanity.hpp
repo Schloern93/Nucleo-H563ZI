@@ -60,8 +60,6 @@ constexpr bool operator==(const Quantity<UnitTag1, Rep1, Scale1> &lhs, const Qua
 template <typename UnitTagFriend, typename RepFriend, typename Scale1, typename Scale2>
 constexpr auto operator+(const Quantity<UnitTagFriend, RepFriend, Scale1> &lhs,
                          const Quantity<UnitTagFriend, RepFriend, Scale2> &rhs) {
-  static_assert(std::is_same<UnitTagFriend, typename Quantity<UnitTagFriend, RepFriend, Scale2>::unit>::value,
-                "UnitTags are not the same!");
 
   using big = std::intmax_t;
   using targetScale =
@@ -96,8 +94,6 @@ constexpr auto operator+(const Quantity<UnitTagFriend, RepFriend, Scale1> &lhs,
 template <typename UnitTagFriend, typename RepFriend, typename Scale1, typename Scale2>
 constexpr auto operator-(const Quantity<UnitTagFriend, RepFriend, Scale1> &lhs,
                          const Quantity<UnitTagFriend, RepFriend, Scale2> &rhs) {
-  static_assert(std::is_same<UnitTagFriend, typename Quantity<UnitTagFriend, RepFriend, Scale2>::unit>::value,
-                "UnitTags are not the same!");
 
   using big = std::intmax_t;
   using targetScale =

@@ -26,17 +26,17 @@ public:
       data[0] = externalTempSensor.GetSensorData();
       data[1] = internalTempSensor.GetSensorData();
       int64_t asdasdasdasd = data[1].value.getRawValue();
-      Units::DeciCelsius kjkjkjkjk = data[0].value.cast<Units::DeciCelsius>();
+      // Units::DeciCelsius kjkjkjkjk = data[0].value.cast<Units::DeciCelsius>();
 
-      Units::Volt v1{10};
-      Units::Volt v8{10};
-      Units::Volt v9 = v1 + v8;
-      Units::MilliVolt v2{200};
-      Units::MilliVolt v5 = v2 + v1;
-      Units::MilliVolt v4 = v1 + v2;
-      Units::MilliVolt v3 = v1.cast<Units::MilliVolt>() + v2;
+      // Units::Volt volt1{10};
+      // Units::MilliVolt milliVolt2{200};
+      // Units::Celsius celsius1{25};
+      // Units::Kelvin kelvin1{500};
 
-      Units::Celsius a1 = data[0].value + data[0].value;
+      // Units::MilliVolt v5 = volt1 + milliVolt2;
+      // // Units::MilliVolt v6 = milliVolt2 - kelvin1;
+
+      // Units::Celsius a1 = data[0].value + data[0].value;
 
       char buffer[160];
       vTaskGetRunTimeStats(buffer);
