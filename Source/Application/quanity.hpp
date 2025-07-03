@@ -35,13 +35,32 @@ public:
     return OutQ{static_cast<typename OutQ::rep>(tmp)};
   }
 
+  template <typename UnitTagFriend, typename RepFriend, typename Scale1, typename Scale2>
+  friend constexpr auto operator+(const Quantity<UnitTagFriend, RepFriend, Scale1> &lhs,
+                                  const Quantity<UnitTagFriend, RepFriend, Scale2> &rhs);
+
+  template <typename UnitTagFriend, typename RepFriend, typename Scale1, typename Scale2>
+  friend constexpr auto operator-(const Quantity<UnitTagFriend, RepFriend, Scale1> &lhs,
+                                  const Quantity<UnitTagFriend, RepFriend, Scale2> &rhs);
+
+  template <typename UnitTag1, typename Rep1, typename Scale1, typename UnitTag2, typename Rep2, typename Scale2>
+  friend constexpr auto operator==(const Quantity<UnitTag1, Rep1, Scale1> &lhs,
+                                   const Quantity<UnitTag2, Rep2, Scale2> &rhs);
+
 private:
   rep raw;
 };
 
-template <typename UnitTag, typename Rep1, typename Scale1, typename Rep2, typename Scale2>
-constexpr auto operator+(const Quantity<UnitTag, Rep1, Scale1> &lhs, const Quantity<UnitTag, Rep2, Scale2> &rhs) {
-  static_assert(std::is_same<UnitTag, typename Quantity<UnitTag, Rep2, Scale2>::unit>::value,
+template <typename UnitTag1, typename Rep1, typename Scale1, typename UnitTag2, typename Rep2, typename Scale2>
+constexpr bool operator==(const Quantity<UnitTag1, Rep1, Scale1> &lhs, const Quantity<UnitTag2, Rep2, Scale2> &rhs) {
+  return std::is_same<UnitTag1, UnitTag2>::value && std::is_same<Rep1, Rep2>::value &&
+         std::is_same<Scale1, Scale2>::value && lhs.raw == rhs.raw;
+}
+
+template <typename UnitTagFriend, typename RepFriend, typename Scale1, typename Scale2>
+constexpr auto operator+(const Quantity<UnitTagFriend, RepFriend, Scale1> &lhs,
+                         const Quantity<UnitTagFriend, RepFriend, Scale2> &rhs) {
+  static_assert(std::is_same<UnitTagFriend, typename Quantity<UnitTagFriend, RepFriend, Scale2>::unit>::value,
                 "UnitTags are not the same!");
 
   using big = std::intmax_t;
@@ -49,11 +68,12 @@ constexpr auto operator+(const Quantity<UnitTag, Rep1, Scale1> &lhs, const Quant
       typename std::conditional<(Scale1::num * Scale2::den < Scale2::num * Scale1::den), Scale1, Scale2>::type;
   big result;
 
-  if constexpr(std::is_same<Scale1, Scale2>::value) {
-    result = static_cast<big>(lhs.getRawValue()) + static_cast<big>(rhs.getRawValue());
+  constexpr big minValue = std::numeric_limits<RepFriend>::min();
+  constexpr big maxValue = std::numeric_limits<RepFriend>::max();
 
-    constexpr big minValue = std::numeric_limits<Rep1>::min();
-    constexpr big maxValue = std::numeric_limits<Rep1>::max();
+  if constexpr(std::is_same<Scale1, Scale2>::value) {
+    result = static_cast<big>(lhs.raw) + static_cast<big>(rhs.raw);
+
     if(result < minValue || result > maxValue) {
       assert(false && "Result out of range for Rep type");
     }
@@ -61,23 +81,22 @@ constexpr auto operator+(const Quantity<UnitTag, Rep1, Scale1> &lhs, const Quant
     using lhs_ratio = std::ratio_divide<Scale1, targetScale>;
     using rhs_ratio = std::ratio_divide<Scale2, targetScale>;
 
-    big lhs_adjusted = static_cast<big>(lhs.getRawValue()) * lhs_ratio::num / lhs_ratio::den;
-    big rhs_adjusted = static_cast<big>(rhs.getRawValue()) * rhs_ratio::num / rhs_ratio::den;
+    big lhs_adjusted = static_cast<big>(lhs.raw) * lhs_ratio::num / lhs_ratio::den;
+    big rhs_adjusted = static_cast<big>(rhs.raw) * rhs_ratio::num / rhs_ratio::den;
 
     result = lhs_adjusted + rhs_adjusted;
 
-    constexpr big minValue = std::numeric_limits<Rep1>::min();
-    constexpr big maxValue = std::numeric_limits<Rep1>::max();
     if(result < minValue || result > maxValue) {
       assert(false && "Result out of range for Rep type");
     }
   }
-  return Quantity<UnitTag, Rep1, targetScale>{static_cast<Rep1>(result)};
+  return Quantity<UnitTagFriend, RepFriend, targetScale>{static_cast<RepFriend>(result)};
 }
 
-template <typename UnitTag, typename Rep1, typename Scale1, typename Rep2, typename Scale2>
-constexpr auto operator-(const Quantity<UnitTag, Rep1, Scale1> &lhs, const Quantity<UnitTag, Rep2, Scale2> &rhs) {
-  static_assert(std::is_same<UnitTag, typename Quantity<UnitTag, Rep2, Scale2>::unit>::value,
+template <typename UnitTagFriend, typename RepFriend, typename Scale1, typename Scale2>
+constexpr auto operator-(const Quantity<UnitTagFriend, RepFriend, Scale1> &lhs,
+                         const Quantity<UnitTagFriend, RepFriend, Scale2> &rhs) {
+  static_assert(std::is_same<UnitTagFriend, typename Quantity<UnitTagFriend, RepFriend, Scale2>::unit>::value,
                 "UnitTags are not the same!");
 
   using big = std::intmax_t;
@@ -85,11 +104,12 @@ constexpr auto operator-(const Quantity<UnitTag, Rep1, Scale1> &lhs, const Quant
       typename std::conditional<(Scale1::num * Scale2::den < Scale2::num * Scale1::den), Scale1, Scale2>::type;
   big result;
 
-  if constexpr(std::is_same<Scale1, Scale2>::value) {
-    result = static_cast<big>(lhs.getRawValue()) + static_cast<big>(rhs.getRawValue());
+  constexpr big minValue = std::numeric_limits<RepFriend>::min();
+  constexpr big maxValue = std::numeric_limits<RepFriend>::max();
 
-    constexpr big minValue = std::numeric_limits<Rep1>::min();
-    constexpr big maxValue = std::numeric_limits<Rep1>::max();
+  if constexpr(std::is_same<Scale1, Scale2>::value) {
+    result = static_cast<big>(lhs.raw) + static_cast<big>(rhs.raw);
+
     if(result < minValue || result > maxValue) {
       assert(false && "Result out of range for Rep type");
     }
@@ -97,16 +117,14 @@ constexpr auto operator-(const Quantity<UnitTag, Rep1, Scale1> &lhs, const Quant
     using lhs_ratio = std::ratio_divide<Scale1, targetScale>;
     using rhs_ratio = std::ratio_divide<Scale2, targetScale>;
 
-    big lhs_adjusted = static_cast<big>(lhs.getRawValue()) * lhs_ratio::num / lhs_ratio::den;
-    big rhs_adjusted = static_cast<big>(rhs.getRawValue()) * rhs_ratio::num / rhs_ratio::den;
+    big lhs_adjusted = static_cast<big>(lhs.raw) * lhs_ratio::num / lhs_ratio::den;
+    big rhs_adjusted = static_cast<big>(rhs.raw) * rhs_ratio::num / rhs_ratio::den;
 
     result = lhs_adjusted - rhs_adjusted;
 
-    constexpr big minValue = std::numeric_limits<Rep1>::min();
-    constexpr big maxValue = std::numeric_limits<Rep1>::max();
     if(result < minValue || result > maxValue) {
       assert(false && "Result out of range for Rep type");
     }
   }
-  return Quantity<UnitTag, Rep1, targetScale>{static_cast<Rep1>(result)};
+  return Quantity<UnitTagFriend, RepFriend, targetScale>{static_cast<RepFriend>(result)};
 }
